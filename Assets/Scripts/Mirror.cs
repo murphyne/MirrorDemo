@@ -8,7 +8,6 @@ public class Mirror : MonoBehaviour
 
     private Transform _playerCameraTransform;
     private Transform _mirrorCameraTransform;
-    private Matrix4x4 _mirrorMatrix;
 
     private RenderTexture _renderTexture;
 
@@ -17,13 +16,12 @@ public class Mirror : MonoBehaviour
         _playerCameraTransform = playerCamera.transform;
         _mirrorCameraTransform = mirrorCamera.transform;
 
+        // Debug.Log($"Create texture {Screen.width}x{Screen.height}");
         _renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
+        // _renderTexture.Create();
+
         mirrorCamera.targetTexture = _renderTexture;
         mirrorRenderer.material.mainTexture = _renderTexture;
-
-        _mirrorMatrix = Matrix4x4.identity;
-        _mirrorMatrix.m11 *= -1;
-        _mirrorMatrix.m22 *= -1;
     }
 
     private void LateUpdate()
@@ -31,14 +29,36 @@ public class Mirror : MonoBehaviour
         mirrorCamera.CopyFrom(playerCamera);
         mirrorCamera.targetTexture = _renderTexture;
 
-        Matrix4x4 mirrorWorldToLocal = mirrorRenderer.worldToLocalMatrix;
-        Matrix4x4 mirrorLocalToWorld = mirrorRenderer.localToWorldMatrix;
-        Matrix4x4 mirrorMatrix = mirrorLocalToWorld * _mirrorMatrix * mirrorWorldToLocal;
+        MirrorTransform(_playerCameraTransform, _mirrorCameraTransform, mirrorRenderer.transform);
 
-        var m = mirrorMatrix * _playerCameraTransform.localToWorldMatrix;
-        _mirrorCameraTransform.SetPositionAndRotation(m.GetColumn(3), m.rotation);
-        Debug.Log($"{m.GetColumn(3)} {m.rotation}");
+        if (_renderTexture.width != Screen.width || _renderTexture.height != Screen.height)
+        {
+            Debug.Log($"Resize texture {Screen.width}x{Screen.height}");
+            _renderTexture.Release();
+            // _renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
+            _renderTexture.width = Screen.width;
+            _renderTexture.height = Screen.height;
+            _renderTexture.Create();
+        }
 
         mirrorCamera.Render();
+    }
+
+    public static void MirrorTransform(Transform sourceTransform, Transform targetTransform, Transform mirrorTransform)
+    {
+        Matrix4x4 mirrorWorldToLocal = mirrorTransform.worldToLocalMatrix;
+        Matrix4x4 mirrorLocalToWorld = mirrorTransform.localToWorldMatrix;
+        Matrix4x4 matrixScale = Matrix4x4.Scale(new Vector3(1, 1, -1));
+        Matrix4x4 mirrorMatrix = mirrorLocalToWorld * matrixScale * mirrorWorldToLocal;
+
+        // https://forum.unity.com/threads/how-to-assign-matrix4x4-to-transform.121966/
+        targetTransform.position = mirrorMatrix * sourceTransform.position;
+        targetTransform.localScale = new Vector3(
+            mirrorMatrix.GetColumn(0).magnitude,
+            mirrorMatrix.GetColumn(1).magnitude,
+            mirrorMatrix.GetColumn(2).magnitude);
+
+        Matrix4x4 matrixRotation = Matrix4x4.Rotate(Quaternion.LookRotation(sourceTransform.forward));
+        targetTransform.rotation = Quaternion.LookRotation(mirrorMatrix * matrixRotation * Vector3.forward);
     }
 }
