@@ -38,6 +38,13 @@ namespace Tests.Editor
 
         [Test]
         [TestCaseSource(typeof(MatrixTests), nameof(MatrixTestCaseSource))]
+        public void DataSceneTest(Data d)
+        {
+            DataDisplayScene.Render(d);
+        }
+
+        [Test]
+        [TestCaseSource(typeof(MatrixTests), nameof(MatrixTestCaseSource))]
         public void DataTextureTest(Data d)
         {
             DataDisplayTexture.Render(d);
