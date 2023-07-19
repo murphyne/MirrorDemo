@@ -52,7 +52,7 @@ public class Mirror : MonoBehaviour
         Matrix4x4 mirrorMatrix = mirrorLocalToWorld * matrixScale * mirrorWorldToLocal;
 
         // https://forum.unity.com/threads/how-to-assign-matrix4x4-to-transform.121966/
-        targetTransform.position = mirrorMatrix * sourceTransform.position;
+        targetTransform.position = mirrorTransform.position + (Vector3)(mirrorMatrix * (sourceTransform.position - mirrorTransform.position));
         targetTransform.localScale = new Vector3(
             mirrorMatrix.GetColumn(0).magnitude,
             mirrorMatrix.GetColumn(1).magnitude,

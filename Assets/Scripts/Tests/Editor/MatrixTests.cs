@@ -72,7 +72,7 @@ namespace Tests.Editor
             Matrix4x4 matrixScale = Matrix4x4.Scale(new Vector3(1, 1, -1));
             Matrix4x4 matrixMirror = matrixLocalToWorld * matrixScale * matrixWorldToLocal;
 
-            Vector3 bPosActual = matrixMirror * d.aPos;
+            Vector3 bPosActual = d.mPos + (Vector3)(matrixMirror * (d.aPos - d.mPos));
 
             Assert.That(bPosActual, Is.EqualTo(d.bPos).Using(Vector3EqualityComparer.Instance));
         }
