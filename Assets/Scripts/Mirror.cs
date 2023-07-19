@@ -58,7 +58,9 @@ public class Mirror : MonoBehaviour
             mirrorMatrix.GetColumn(1).magnitude,
             mirrorMatrix.GetColumn(2).magnitude);
 
-        Matrix4x4 matrixRotation = Matrix4x4.Rotate(Quaternion.LookRotation(sourceTransform.forward));
-        targetTransform.rotation = Quaternion.LookRotation(mirrorMatrix * matrixRotation * Vector3.forward);
+        Matrix4x4 matrixRotation = Matrix4x4.Rotate(Quaternion.LookRotation(sourceTransform.forward, sourceTransform.up));
+        targetTransform.rotation = Quaternion.LookRotation(
+            mirrorMatrix * matrixRotation * Vector3.forward,
+            mirrorMatrix * matrixRotation * Vector3.up);
     }
 }

@@ -105,14 +105,14 @@ namespace Tests.Editor
         {
             var mGo = new GameObject("M");
             mGo.transform.position = d.mPos;
-            mGo.transform.LookAt(d.mDir);
+            mGo.transform.LookAt(d.mDir, d.mUp - d.mPos);
 
             Matrix4x4 matrixWorldToLocal = mGo.transform.worldToLocalMatrix;
             Matrix4x4 matrixLocalToWorld = mGo.transform.localToWorldMatrix;
             Matrix4x4 matrixScale = Matrix4x4.Scale(new Vector3(1, 1, -1));
             Matrix4x4 matrixMirror = matrixLocalToWorld * matrixScale * matrixWorldToLocal;
 
-            Matrix4x4 matrixRotation = Matrix4x4.Rotate(Quaternion.LookRotation(d.aDir - d.aPos));
+            Matrix4x4 matrixRotation = Matrix4x4.Rotate(Quaternion.LookRotation(d.aDir - d.aPos, d.aUp - d.aPos));
 
             LogRotation(matrixWorldToLocal * matrixRotation);
             LogRotation(matrixLocalToWorld * matrixRotation);
@@ -139,14 +139,14 @@ namespace Tests.Editor
         {
             var mGo = new GameObject("M");
             mGo.transform.position = d.mPos;
-            mGo.transform.LookAt(d.mDir);
+            mGo.transform.LookAt(d.mDir, d.mUp - d.mPos);
 
             Matrix4x4 matrixWorldToLocal = mGo.transform.worldToLocalMatrix;
             Matrix4x4 matrixLocalToWorld = mGo.transform.localToWorldMatrix;
             Matrix4x4 matrixScale = Matrix4x4.Scale(new Vector3(1, 1, -1));
             Matrix4x4 matrixMirror = matrixLocalToWorld * matrixScale * matrixWorldToLocal;
 
-            Matrix4x4 matrixRotation = Matrix4x4.Rotate(Quaternion.LookRotation(d.aDir - d.aPos));
+            Matrix4x4 matrixRotation = Matrix4x4.Rotate(Quaternion.LookRotation(d.aDir - d.aPos, d.aUp - d.aPos));
 
             LogRotation(matrixWorldToLocal * matrixRotation);
             LogRotation(matrixLocalToWorld * matrixRotation);
@@ -196,15 +196,15 @@ namespace Tests.Editor
         {
             var aGo = new GameObject("A");
             aGo.transform.position = d.aPos;
-            aGo.transform.LookAt(d.aDir);
+            aGo.transform.LookAt(d.aDir, d.aUp - d.aPos);
 
             var bGo = new GameObject("B");
             bGo.transform.position = d.bPos;
-            bGo.transform.LookAt(d.bDir);
+            bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
 
             var mGo = new GameObject("M");
             mGo.transform.position = d.mPos;
-            mGo.transform.LookAt(d.mDir);
+            mGo.transform.LookAt(d.mDir, d.mUp - d.mPos);
 
             Mirror.MirrorTransform(aGo.transform, bGo.transform, mGo.transform);
 
@@ -219,15 +219,15 @@ namespace Tests.Editor
         {
             var aGo = new GameObject("A");
             aGo.transform.position = d.aPos;
-            aGo.transform.LookAt(d.aDir);
+            aGo.transform.LookAt(d.aDir, d.aUp - d.aPos);
 
             var bGo = new GameObject("B");
             bGo.transform.position = d.bPos;
-            bGo.transform.LookAt(d.bDir);
+            bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
 
             var mGo = new GameObject("M");
             mGo.transform.position = d.mPos;
-            mGo.transform.LookAt(d.mDir);
+            mGo.transform.LookAt(d.mDir, d.mUp - d.mPos);
 
             Mirror.MirrorTransform(aGo.transform, bGo.transform, mGo.transform);
 
