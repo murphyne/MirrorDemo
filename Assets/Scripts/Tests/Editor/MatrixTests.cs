@@ -37,9 +37,24 @@ namespace Tests.Editor
 
         [Test]
         [TestCaseSource(typeof(MatrixTests), nameof(MatrixTestCaseSource))]
+        public void DataTextureTest(Data d)
+        {
+            DataDisplayTexture.Render(d);
+        }
+
+        [Test]
+        [TestCaseSource(typeof(MatrixTests), nameof(MatrixTestCaseSource))]
         public void DataTextTest(Data d)
         {
             var result = DataDisplayText.Render(d);
+            Debug.Log(result);
+        }
+
+        [Test]
+        [TestCaseSource(typeof(MatrixTests), nameof(MatrixTestCaseSource))]
+        public void DataHashTest(Data d)
+        {
+            var result = DataHash.Hash(d);
             Debug.Log(result);
         }
 
