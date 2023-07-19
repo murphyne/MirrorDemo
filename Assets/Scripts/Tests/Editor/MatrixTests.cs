@@ -33,6 +33,7 @@ namespace Tests.Editor
             yield return D(aPos: X_Z(-1,  2), aDir: X_Z(-3,  0), bPos: X_Z( 2, -1), bDir: X_Z( 0, -3), mPos: X_Z( 0,  0), mDir: X_Z(-1,  1));
             yield return D(aPos: X_Z(-1,  2), aDir: X_Z(-3,  0), bPos: X_Z( 2, -1), bDir: X_Z( 0, -3), mPos: X_Z( 1,  1), mDir: X_Z( 0,  2));
             yield return D(aPos: X_Z( 0,  3), aDir: X_Z( 1,  1), bPos: X_Z( 3,  0), bDir: X_Z( 1,  1), mPos: X_Z( 0,  0), mDir: X_Z(-1,  1));
+            yield return D(aPos: X_Z(-2,  0), aDir: X_Z(-1,  0), bPos: X_Z( 4,  0), bDir: X_Z( 3,  0), mPos: X_Z( 1,  0), mDir: X_Z( 0,  0));
         }
 
         [Test]
