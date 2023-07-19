@@ -29,8 +29,8 @@ namespace Tests.Editor
             var bDirWorld = data.bDir;
             var mPosCWorld = data.mPos;
             var mDirFWorld = data.mDir;
-            var mDirLWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, Vector3.up);
-            var mDirRWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, Vector3.down);
+            var mDirLWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, data.mUp);
+            var mDirRWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, data.mUp * -1);
 
             var colorBack = new Color(0.90f, 0.90f, 0.90f);
             var colorGrid = new Color(0.85f, 0.85f, 0.85f);

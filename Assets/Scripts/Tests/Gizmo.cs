@@ -9,6 +9,7 @@ namespace Tests
         [SerializeField] public Color color;
         [SerializeField] public Vector3 pos;
         [SerializeField] public Vector3 dir;
+        [SerializeField] public Vector3 up;
         [SerializeField] public Vector3 scaleMeshDir;
 
         private void OnDrawGizmos()
@@ -22,6 +23,7 @@ namespace Tests
             Gizmos.DrawWireMesh(meshPos, pos, rotation, meshPosScale);
             Gizmos.DrawWireMesh(meshDir, dir, rotation, meshDirScale);
             Gizmos.DrawLine(pos, dir);
+            Gizmos.DrawLine(pos, up);
         }
     }
 }

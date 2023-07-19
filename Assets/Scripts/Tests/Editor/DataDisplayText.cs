@@ -52,6 +52,7 @@ namespace Tests.Editor
                 : (aDX && aDZ && bDX && bDZ) ? "a⁄b"
                 : (aDX && aDZ && mDX && mDZ) ? "a⁄m"
                 : (bDX && bDZ && mDX && mDZ) ? "b⁄m"
+                : (mPX && mPZ && mDX && mDZ) ? "M⁄m"
                 : (aPX && aPZ) ? " A "
                 : (bPX && bPZ) ? " B "
                 : (aDX && aDZ) ? " a "

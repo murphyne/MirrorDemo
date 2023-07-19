@@ -15,18 +15,27 @@ namespace Tests.Editor
             res.Append(ToChar(data.aDir.x));
             res.Append(ToChar(data.aDir.y));
             res.Append(ToChar(data.aDir.z));
+            res.Append(ToChar(data.aUp.x));
+            res.Append(ToChar(data.aUp.y));
+            res.Append(ToChar(data.aUp.z));
             res.Append(ToChar(data.bPos.x));
             res.Append(ToChar(data.bPos.y));
             res.Append(ToChar(data.bPos.z));
             res.Append(ToChar(data.bDir.x));
             res.Append(ToChar(data.bDir.y));
             res.Append(ToChar(data.bDir.z));
+            res.Append(ToChar(data.bUp.x));
+            res.Append(ToChar(data.bUp.y));
+            res.Append(ToChar(data.bUp.z));
             res.Append(ToChar(data.mPos.x));
             res.Append(ToChar(data.mPos.y));
             res.Append(ToChar(data.mPos.z));
             res.Append(ToChar(data.mDir.x));
             res.Append(ToChar(data.mDir.y));
             res.Append(ToChar(data.mDir.z));
+            res.Append(ToChar(data.mUp.x));
+            res.Append(ToChar(data.mUp.y));
+            res.Append(ToChar(data.mUp.z));
 
             return res.ToString();
         }

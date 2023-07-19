@@ -21,7 +21,7 @@ namespace Tests.Editor
             // var aGo = new GameObject();
             aGo.name = "A";
             aGo.transform.position = data.aPos;
-            aGo.transform.LookAt(data.aDir);
+            aGo.transform.LookAt(data.aDir, data.aUp - data.aPos);
             aGo.transform.localScale = Vector3.one * 0.3f;
             var aGizmo = aGo.AddComponent<Gizmo>();
             aGizmo.meshPos = meshCube;
@@ -30,12 +30,13 @@ namespace Tests.Editor
             aGizmo.color = colorA;
             aGizmo.pos = data.aPos;
             aGizmo.dir = data.aDir;
+            aGizmo.up = data.aUp;
 
             var bGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
             // var bGo = new GameObject();
             bGo.name = "B";
             bGo.transform.position = data.bPos;
-            bGo.transform.LookAt(data.bDir);
+            bGo.transform.LookAt(data.bDir, data.bUp - data.bPos);
             bGo.transform.localScale = Vector3.one * 0.3f;
             var bGizmo = bGo.AddComponent<Gizmo>();
             bGizmo.meshPos = meshCube;
@@ -44,12 +45,13 @@ namespace Tests.Editor
             bGizmo.color = colorB;
             bGizmo.pos = data.bPos;
             bGizmo.dir = data.bDir;
+            bGizmo.up = data.bUp;
 
             var mGo = GameObject.CreatePrimitive(PrimitiveType.Quad);
             // var mGo = new GameObject();
             mGo.name = "M";
             mGo.transform.position = data.mPos;
-            mGo.transform.LookAt(data.mDir);
+            mGo.transform.LookAt(data.mDir, data.mUp - data.mPos);
             var mGizmo = mGo.AddComponent<Gizmo>();
             mGizmo.meshPos = meshQuad;
             mGizmo.meshDir = meshCube;
@@ -57,6 +59,7 @@ namespace Tests.Editor
             mGizmo.color = colorM;
             mGizmo.pos = data.mPos;
             mGizmo.dir = data.mDir;
+            mGizmo.up = data.mUp;
 
             var hash = DataHash.Hash(data);
             WriteFile(hash, scene);
