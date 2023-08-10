@@ -2,22 +2,15 @@
 
 public class Mirror : MonoBehaviour
 {
-    [SerializeField] private Camera playerCamera;
     [SerializeField] private MeshRenderer mirrorRenderer;
 
     private Camera _mirrorCamera;
-
-    private Transform _playerCameraTransform;
-    private Transform _mirrorCameraTransform;
 
     private RenderTexture _renderTexture;
 
     private void Start()
     {
         _mirrorCamera = CreateMirrorCamera();
-
-        _playerCameraTransform = playerCamera.transform;
-        _mirrorCameraTransform = _mirrorCamera.transform;
 
         // Debug.Log($"Create texture {Screen.width}x{Screen.height}");
         _renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
@@ -27,12 +20,16 @@ public class Mirror : MonoBehaviour
         mirrorRenderer.material.mainTexture = _renderTexture;
     }
 
-    private void LateUpdate()
+    private void OnWillRenderObject()
     {
-        _mirrorCamera.CopyFrom(playerCamera);
+        var currentCamera = Camera.current;
+
+        if (!currentCamera.enabled) return;
+
+        _mirrorCamera.CopyFrom(currentCamera);
         _mirrorCamera.targetTexture = _renderTexture;
 
-        MirrorTransform(_playerCameraTransform, _mirrorCameraTransform, mirrorRenderer.transform);
+        MirrorTransform(currentCamera.transform, _mirrorCamera.transform, mirrorRenderer.transform);
 
         if (_renderTexture.width != Screen.width || _renderTexture.height != Screen.height)
         {

@@ -1067,7 +1067,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43d74396b400cf34c85be3bcaa7947e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 534669904}
   mirrorRenderer: {fileID: 1921045264}
 --- !u!64 &1921045263
 MeshCollider:
