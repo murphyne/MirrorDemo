@@ -3,8 +3,9 @@
 public class Mirror : MonoBehaviour
 {
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private Camera mirrorCamera;
     [SerializeField] private MeshRenderer mirrorRenderer;
+
+    private Camera _mirrorCamera;
 
     private Transform _playerCameraTransform;
     private Transform _mirrorCameraTransform;
@@ -13,21 +14,23 @@ public class Mirror : MonoBehaviour
 
     private void Start()
     {
+        _mirrorCamera = CreateMirrorCamera();
+
         _playerCameraTransform = playerCamera.transform;
-        _mirrorCameraTransform = mirrorCamera.transform;
+        _mirrorCameraTransform = _mirrorCamera.transform;
 
         // Debug.Log($"Create texture {Screen.width}x{Screen.height}");
         _renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
         // _renderTexture.Create();
 
-        mirrorCamera.targetTexture = _renderTexture;
+        _mirrorCamera.targetTexture = _renderTexture;
         mirrorRenderer.material.mainTexture = _renderTexture;
     }
 
     private void LateUpdate()
     {
-        mirrorCamera.CopyFrom(playerCamera);
-        mirrorCamera.targetTexture = _renderTexture;
+        _mirrorCamera.CopyFrom(playerCamera);
+        _mirrorCamera.targetTexture = _renderTexture;
 
         MirrorTransform(_playerCameraTransform, _mirrorCameraTransform, mirrorRenderer.transform);
 
@@ -41,7 +44,20 @@ public class Mirror : MonoBehaviour
             _renderTexture.Create();
         }
 
-        mirrorCamera.Render();
+        _mirrorCamera.Render();
+    }
+
+    private Camera CreateMirrorCamera()
+    {
+        var mirrorCameraGameObject = new GameObject();
+        mirrorCameraGameObject.name = $"Mirror Camera";
+        mirrorCameraGameObject.transform.parent = transform;
+        mirrorCameraGameObject.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
+
+        var mirrorCamera = mirrorCameraGameObject.AddComponent<Camera>();
+        mirrorCamera.enabled = false;
+
+        return mirrorCamera;
     }
 
     public static void MirrorTransform(Transform sourceTransform, Transform targetTransform, Transform mirrorTransform)
