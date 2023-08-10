@@ -1,22 +1,16 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 [ExecuteInEditMode]
 public class Mirror : MonoBehaviour
 {
     [SerializeField] private MeshRenderer mirrorRenderer;
 
-    private Camera _mirrorCamera;
+    private readonly Dictionary<Camera, Camera> _mirrorCameras =
+        new Dictionary<Camera, Camera>();
 
-    private RenderTexture _renderTexture;
-
-    private void Start()
-    {
-        _mirrorCamera = CreateMirrorCamera();
-        _renderTexture = CreateRenderTexture();
-
-        _mirrorCamera.targetTexture = _renderTexture;
-        mirrorRenderer.sharedMaterial.mainTexture = _renderTexture;
-    }
+    private readonly Dictionary<Camera, RenderTexture> _renderTextures =
+        new Dictionary<Camera, RenderTexture>();
 
     private void OnWillRenderObject()
     {
@@ -30,28 +24,42 @@ public class Mirror : MonoBehaviour
         if (!currentCamera.enabled) return;
 #endif
 
-        _mirrorCamera.CopyFrom(currentCamera);
-        _mirrorCamera.targetTexture = _renderTexture;
+        var mirrorCamera = GetMirrorCamera(currentCamera);
+        var renderTexture = GetRenderTexture(currentCamera);
 
-        MirrorTransform(currentCamera.transform, _mirrorCamera.transform, mirrorRenderer.transform);
+        mirrorCamera.CopyFrom(currentCamera);
+        mirrorCamera.targetTexture = renderTexture;
+        mirrorRenderer.sharedMaterial.mainTexture = renderTexture;
 
-        if (_renderTexture.width != Screen.width || _renderTexture.height != Screen.height)
+        MirrorTransform(currentCamera.transform, mirrorCamera.transform, mirrorRenderer.transform);
+
+        if (renderTexture.width != Screen.width || renderTexture.height != Screen.height)
         {
             Debug.Log($"Resize texture {Screen.width}x{Screen.height}");
-            _renderTexture.Release();
-            // _renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
-            _renderTexture.width = Screen.width;
-            _renderTexture.height = Screen.height;
-            _renderTexture.Create();
+            renderTexture.Release();
+            // renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
+            renderTexture.width = Screen.width;
+            renderTexture.height = Screen.height;
+            renderTexture.Create();
         }
 
-        _mirrorCamera.Render();
+        mirrorCamera.Render();
     }
 
-    private Camera CreateMirrorCamera()
+    private Camera GetMirrorCamera(Camera camera)
+    {
+        if (_mirrorCameras.TryGetValue(camera, out var mirrorCamera))
+            return mirrorCamera;
+
+        mirrorCamera = CreateMirrorCamera(camera);
+        _mirrorCameras[camera] = mirrorCamera;
+        return mirrorCamera;
+    }
+
+    private Camera CreateMirrorCamera(Camera camera)
     {
         var mirrorCameraGameObject = new GameObject();
-        mirrorCameraGameObject.name = $"Mirror Camera";
+        mirrorCameraGameObject.name = $"Mirror Camera [{camera.name}]";
         mirrorCameraGameObject.transform.parent = transform;
         mirrorCameraGameObject.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
 
@@ -61,11 +69,21 @@ public class Mirror : MonoBehaviour
         return mirrorCamera;
     }
 
-    private RenderTexture CreateRenderTexture()
+    private RenderTexture GetRenderTexture(Camera camera)
+    {
+        if (_renderTextures.TryGetValue(camera, out var renderTexture))
+            return renderTexture;
+
+        renderTexture = CreateRenderTexture(camera);
+        _renderTextures[camera] = renderTexture;
+        return renderTexture;
+    }
+
+    private static RenderTexture CreateRenderTexture(Camera camera)
     {
         // Debug.Log($"Create texture {Screen.width}x{Screen.height}");
         var renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
-        renderTexture.name = "Mirror Texture";
+        renderTexture.name = $"Mirror Texture [{camera.name}]";
         // renderTexture.Create();
 
         return renderTexture;
