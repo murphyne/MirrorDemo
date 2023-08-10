@@ -12,10 +12,7 @@ public class Mirror : MonoBehaviour
     private void Start()
     {
         _mirrorCamera = CreateMirrorCamera();
-
-        // Debug.Log($"Create texture {Screen.width}x{Screen.height}");
-        _renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
-        // _renderTexture.Create();
+        _renderTexture = CreateRenderTexture();
 
         _mirrorCamera.targetTexture = _renderTexture;
         mirrorRenderer.sharedMaterial.mainTexture = _renderTexture;
@@ -62,6 +59,16 @@ public class Mirror : MonoBehaviour
         mirrorCamera.enabled = false;
 
         return mirrorCamera;
+    }
+
+    private RenderTexture CreateRenderTexture()
+    {
+        // Debug.Log($"Create texture {Screen.width}x{Screen.height}");
+        var renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
+        renderTexture.name = "Mirror Texture";
+        // renderTexture.Create();
+
+        return renderTexture;
     }
 
     public static void MirrorTransform(Transform sourceTransform, Transform targetTransform, Transform mirrorTransform)
