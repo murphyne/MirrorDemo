@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[ExecuteInEditMode]
 public class Mirror : MonoBehaviour
 {
     [SerializeField] private MeshRenderer mirrorRenderer;
@@ -17,14 +18,20 @@ public class Mirror : MonoBehaviour
         // _renderTexture.Create();
 
         _mirrorCamera.targetTexture = _renderTexture;
-        mirrorRenderer.material.mainTexture = _renderTexture;
+        mirrorRenderer.sharedMaterial.mainTexture = _renderTexture;
     }
 
     private void OnWillRenderObject()
     {
         var currentCamera = Camera.current;
 
+#if UNITY_EDITOR
+        var sceneView = UnityEditor.SceneView.currentDrawingSceneView;
+        var sceneViewCamera = (sceneView == null) ? null : sceneView.camera;
+        if (!currentCamera.enabled && currentCamera != sceneViewCamera) return;
+#else
         if (!currentCamera.enabled) return;
+#endif
 
         _mirrorCamera.CopyFrom(currentCamera);
         _mirrorCamera.targetTexture = _renderTexture;
