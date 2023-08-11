@@ -121,6 +121,12 @@ public class Mirror : MonoBehaviour
         var mirrorPlane = GetPlane(point, normal);
         var mirrorMatrix = GetMirrorMatrix(mirrorPlane);
         targetCamera.worldToCameraMatrix = sourceCamera.worldToCameraMatrix * mirrorMatrix;
+
+        var pointCamera = targetCamera.worldToCameraMatrix.MultiplyPoint(point);
+        var normalCamera = targetCamera.worldToCameraMatrix.MultiplyVector(normal).normalized;
+        var mirrorPlaneClip = GetPlane(pointCamera, normalCamera);
+        var projectionMatrix = sourceCamera.CalculateObliqueMatrix(mirrorPlaneClip);
+        targetCamera.projectionMatrix = projectionMatrix;
     }
 
     public static Matrix4x4 GetMirrorMatrix(Vector4 plane)
