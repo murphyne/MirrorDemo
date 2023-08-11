@@ -12,6 +12,26 @@ public class Mirror : MonoBehaviour
     private readonly Dictionary<Camera, RenderTexture> _renderTextures =
         new Dictionary<Camera, RenderTexture>();
 
+    private void OnDisable()
+    {
+        foreach (var pair in _mirrorCameras)
+        {
+            var mirrorCamera = pair.Value;
+            DestroyImmediate(mirrorCamera.gameObject);
+        }
+
+        _mirrorCameras.Clear();
+
+        foreach (var pair in _renderTextures)
+        {
+            var renderTexture = pair.Value;
+            renderTexture.Release();
+            renderTexture.DiscardContents();
+        }
+
+        _renderTextures.Clear();
+    }
+
     private void OnWillRenderObject()
     {
         var currentCamera = Camera.current;
