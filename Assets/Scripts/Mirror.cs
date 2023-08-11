@@ -51,7 +51,7 @@ public class Mirror : MonoBehaviour
         mirrorCamera.targetTexture = renderTexture;
         mirrorRenderer.sharedMaterial.mainTexture = renderTexture;
 
-        MirrorTransform(currentCamera.transform, mirrorCamera.transform, mirrorRenderer.transform);
+        MirrorTransform(currentCamera, mirrorCamera, mirrorRenderer.transform);
 
         if (renderTexture.width != Screen.width || renderTexture.height != Screen.height)
         {
@@ -63,7 +63,9 @@ public class Mirror : MonoBehaviour
             renderTexture.Create();
         }
 
+        GL.invertCulling = true;
         mirrorCamera.Render();
+        GL.invertCulling = false;
     }
 
     private Camera GetMirrorCamera(Camera camera)
@@ -111,23 +113,47 @@ public class Mirror : MonoBehaviour
         return renderTexture;
     }
 
-    public static void MirrorTransform(Transform sourceTransform, Transform targetTransform, Transform mirrorTransform)
+    public static void MirrorTransform(Camera sourceCamera, Camera targetCamera, Transform mirrorTransform)
     {
-        Matrix4x4 mirrorWorldToLocal = mirrorTransform.worldToLocalMatrix;
-        Matrix4x4 mirrorLocalToWorld = mirrorTransform.localToWorldMatrix;
-        Matrix4x4 matrixScale = Matrix4x4.Scale(new Vector3(1, 1, -1));
-        Matrix4x4 mirrorMatrix = mirrorLocalToWorld * matrixScale * mirrorWorldToLocal;
+        var point = mirrorTransform.position;
+        var normal = mirrorTransform.TransformDirection(Vector3.back);
 
-        // https://forum.unity.com/threads/how-to-assign-matrix4x4-to-transform.121966/
-        targetTransform.position = mirrorTransform.position + (Vector3)(mirrorMatrix * (sourceTransform.position - mirrorTransform.position));
-        targetTransform.localScale = new Vector3(
-            mirrorMatrix.GetColumn(0).magnitude,
-            mirrorMatrix.GetColumn(1).magnitude,
-            mirrorMatrix.GetColumn(2).magnitude);
+        var mirrorPlane = GetPlane(point, normal);
+        var mirrorMatrix = GetMirrorMatrix(mirrorPlane);
+        targetCamera.worldToCameraMatrix = sourceCamera.worldToCameraMatrix * mirrorMatrix;
+    }
 
-        Matrix4x4 matrixRotation = Matrix4x4.Rotate(Quaternion.LookRotation(sourceTransform.forward, sourceTransform.up));
-        targetTransform.rotation = Quaternion.LookRotation(
-            mirrorMatrix * matrixRotation * Vector3.forward,
-            mirrorMatrix * matrixRotation * Vector3.up);
+    public static Matrix4x4 GetMirrorMatrix(Vector4 plane)
+    {
+        var mirrorMatrix = new Matrix4x4();
+
+        mirrorMatrix.m00 = (1f - 2f * plane[0] * plane[0]);
+        mirrorMatrix.m01 = (    -2f * plane[0] * plane[1]);
+        mirrorMatrix.m02 = (    -2f * plane[0] * plane[2]);
+        mirrorMatrix.m03 = (    -2f * plane[0] * plane[3]);
+
+        mirrorMatrix.m10 = (    -2f * plane[1] * plane[0]);
+        mirrorMatrix.m11 = (1f - 2f * plane[1] * plane[1]);
+        mirrorMatrix.m12 = (    -2f * plane[1] * plane[2]);
+        mirrorMatrix.m13 = (    -2f * plane[1] * plane[3]);
+
+        mirrorMatrix.m20 = (    -2f * plane[2] * plane[0]);
+        mirrorMatrix.m21 = (    -2f * plane[2] * plane[1]);
+        mirrorMatrix.m22 = (1f - 2f * plane[2] * plane[2]);
+        mirrorMatrix.m23 = (    -2f * plane[2] * plane[3]);
+
+        mirrorMatrix.m30 = 0f;
+        mirrorMatrix.m31 = 0f;
+        mirrorMatrix.m32 = 0f;
+        mirrorMatrix.m33 = 1f;
+
+        return mirrorMatrix;
+    }
+
+    public static Vector4 GetPlane(Vector3 point, Vector3 normal)
+    {
+        var d = -Vector3.Dot(normal, point);
+        var plane = new Vector4(normal.x, normal.y, normal.z, d);
+        return plane;
     }
 }

@@ -54,7 +54,7 @@ Shader "Unlit/Mirror"
                 float2 textureCoordinate = i.screenPosition.xy / i.screenPosition.w;
 
                 // Flip the texture horizontally.
-                textureCoordinate.x = 1.0f - textureCoordinate.x;
+                // textureCoordinate.x = 1.0f - textureCoordinate.x;
                 // return float4(textureCoordinate.xy,0,0);
 
                 // Enable texture tiling and offset in material.

@@ -85,16 +85,26 @@ namespace Tests.Editor
         [TestCaseSource(typeof(MatrixTests), nameof(MatrixTestCaseSource))]
         public void MatrixPositionTest(Data d)
         {
+            var aGo = new GameObject("A");
+            aGo.transform.position = d.aPos;
+            var aCam = aGo.AddComponent<Camera>();
+
+            var bGo = new GameObject("B");
+            bGo.transform.position = d.bPos;
+            var bCam = bGo.AddComponent<Camera>();
+
             var mGo = new GameObject("M");
             mGo.transform.position = d.mPos;
             mGo.transform.LookAt(d.mDir);
 
-            Matrix4x4 matrixWorldToLocal = mGo.transform.worldToLocalMatrix;
-            Matrix4x4 matrixLocalToWorld = mGo.transform.localToWorldMatrix;
-            Matrix4x4 matrixScale = Matrix4x4.Scale(new Vector3(1, 1, -1));
-            Matrix4x4 matrixMirror = matrixLocalToWorld * matrixScale * matrixWorldToLocal;
+            var point = mGo.transform.position;
+            var normal = mGo.transform.TransformDirection(Vector3.back);
 
-            Vector3 bPosActual = d.mPos + (Vector3)(matrixMirror * (d.aPos - d.mPos));
+            var mirrorPlane = Mirror.GetPlane(point, normal);
+            var mirrorMatrix = Mirror.GetMirrorMatrix(mirrorPlane);
+            bCam.worldToCameraMatrix = aCam.worldToCameraMatrix * mirrorMatrix;
+
+            Vector3 bPosActual = bGo.transform.position;
 
             Assert.That(bPosActual, Is.EqualTo(d.bPos).Using(Vector3EqualityComparer.Instance));
         }
@@ -103,32 +113,28 @@ namespace Tests.Editor
         [TestCaseSource(typeof(MatrixTests), nameof(MatrixTestCaseSource))]
         public void MatrixRotationForwardTest(Data d)
         {
+            var aGo = new GameObject("A");
+            aGo.transform.position = d.aPos;
+            aGo.transform.LookAt(d.aDir, d.aUp - d.aPos);
+            var aCam = aGo.AddComponent<Camera>();
+
+            var bGo = new GameObject("B");
+            bGo.transform.position = d.bPos;
+            bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
+            var bCam = bGo.AddComponent<Camera>();
+
             var mGo = new GameObject("M");
             mGo.transform.position = d.mPos;
             mGo.transform.LookAt(d.mDir, d.mUp - d.mPos);
 
-            Matrix4x4 matrixWorldToLocal = mGo.transform.worldToLocalMatrix;
-            Matrix4x4 matrixLocalToWorld = mGo.transform.localToWorldMatrix;
-            Matrix4x4 matrixScale = Matrix4x4.Scale(new Vector3(1, 1, -1));
-            Matrix4x4 matrixMirror = matrixLocalToWorld * matrixScale * matrixWorldToLocal;
+            var point = mGo.transform.position;
+            var normal = mGo.transform.TransformDirection(Vector3.back);
 
-            Matrix4x4 matrixRotation = Matrix4x4.Rotate(Quaternion.LookRotation(d.aDir - d.aPos, d.aUp - d.aPos));
+            var mirrorPlane = Mirror.GetPlane(point, normal);
+            var mirrorMatrix = Mirror.GetMirrorMatrix(mirrorPlane);
+            bCam.worldToCameraMatrix = aCam.worldToCameraMatrix * mirrorMatrix;
 
-            LogRotation(matrixWorldToLocal * matrixRotation);
-            LogRotation(matrixLocalToWorld * matrixRotation);
-            LogRotation(matrixLocalToWorld * matrixWorldToLocal * matrixRotation);
-            LogRotation(matrixWorldToLocal * matrixLocalToWorld * matrixRotation);
-            LogRotation(matrixLocalToWorld * matrixScale * matrixWorldToLocal * matrixRotation);
-            LogRotation(matrixWorldToLocal * matrixScale * matrixLocalToWorld * matrixRotation);
-            LogRotation(matrixScale * matrixLocalToWorld * matrixWorldToLocal * matrixRotation);
-            LogRotation(matrixScale * matrixWorldToLocal * matrixLocalToWorld * matrixRotation);
-            LogRotation(matrixLocalToWorld * matrixWorldToLocal * matrixScale * matrixRotation);
-            LogRotation(matrixWorldToLocal * matrixLocalToWorld * matrixScale * matrixRotation);
-
-            void LogRotation(Matrix4x4 matrix) =>
-                Debug.Log(matrix * Vector3.forward);
-
-            Vector3 bDirActual = matrixMirror * matrixRotation * Vector3.forward;
+            Vector3 bDirActual = bGo.transform.rotation * Vector3.forward;
 
             Assert.That(bDirActual.normalized, Is.EqualTo((d.bDir - d.bPos).normalized).Using(Vector3EqualityComparer.Instance));
         }
@@ -137,32 +143,28 @@ namespace Tests.Editor
         [TestCaseSource(typeof(MatrixTests), nameof(MatrixTestCaseSource))]
         public void MatrixRotationUpwardTest(Data d)
         {
+            var aGo = new GameObject("A");
+            aGo.transform.position = d.aPos;
+            aGo.transform.LookAt(d.aDir, d.aUp - d.aPos);
+            var aCam = aGo.AddComponent<Camera>();
+
+            var bGo = new GameObject("B");
+            bGo.transform.position = d.bPos;
+            bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
+            var bCam = bGo.AddComponent<Camera>();
+
             var mGo = new GameObject("M");
             mGo.transform.position = d.mPos;
             mGo.transform.LookAt(d.mDir, d.mUp - d.mPos);
 
-            Matrix4x4 matrixWorldToLocal = mGo.transform.worldToLocalMatrix;
-            Matrix4x4 matrixLocalToWorld = mGo.transform.localToWorldMatrix;
-            Matrix4x4 matrixScale = Matrix4x4.Scale(new Vector3(1, 1, -1));
-            Matrix4x4 matrixMirror = matrixLocalToWorld * matrixScale * matrixWorldToLocal;
+            var point = mGo.transform.position;
+            var normal = mGo.transform.TransformDirection(Vector3.back);
 
-            Matrix4x4 matrixRotation = Matrix4x4.Rotate(Quaternion.LookRotation(d.aDir - d.aPos, d.aUp - d.aPos));
+            var mirrorPlane = Mirror.GetPlane(point, normal);
+            var mirrorMatrix = Mirror.GetMirrorMatrix(mirrorPlane);
+            bCam.worldToCameraMatrix = aCam.worldToCameraMatrix * mirrorMatrix;
 
-            LogRotation(matrixWorldToLocal * matrixRotation);
-            LogRotation(matrixLocalToWorld * matrixRotation);
-            LogRotation(matrixLocalToWorld * matrixWorldToLocal * matrixRotation);
-            LogRotation(matrixWorldToLocal * matrixLocalToWorld * matrixRotation);
-            LogRotation(matrixLocalToWorld * matrixScale * matrixWorldToLocal * matrixRotation);
-            LogRotation(matrixWorldToLocal * matrixScale * matrixLocalToWorld * matrixRotation);
-            LogRotation(matrixScale * matrixLocalToWorld * matrixWorldToLocal * matrixRotation);
-            LogRotation(matrixScale * matrixWorldToLocal * matrixLocalToWorld * matrixRotation);
-            LogRotation(matrixLocalToWorld * matrixWorldToLocal * matrixScale * matrixRotation);
-            LogRotation(matrixWorldToLocal * matrixLocalToWorld * matrixScale * matrixRotation);
-
-            void LogRotation(Matrix4x4 matrix) =>
-                Debug.Log(matrix * Vector3.up);
-
-            Vector3 bUpActual = matrixMirror * matrixRotation * Vector3.up;
+            Vector3 bUpActual = bGo.transform.rotation * Vector3.up;
 
             Assert.That(bUpActual.normalized, Is.EqualTo((d.bUp - d.bPos).normalized).Using(Vector3EqualityComparer.Instance));
         }
@@ -174,16 +176,18 @@ namespace Tests.Editor
             var aGo = new GameObject("A");
             aGo.transform.position = d.aPos;
             aGo.transform.LookAt(d.aDir);
+            var aCam = aGo.AddComponent<Camera>();
 
             var bGo = new GameObject("B");
             bGo.transform.position = d.bPos;
             bGo.transform.LookAt(d.bDir);
+            var bCam = bGo.AddComponent<Camera>();
 
             var mGo = new GameObject("M");
             mGo.transform.position = d.mPos;
             mGo.transform.LookAt(d.mDir);
 
-            Mirror.MirrorTransform(aGo.transform, bGo.transform, mGo.transform);
+            Mirror.MirrorTransform(aCam, bCam, mGo.transform);
 
             Vector3 bPosActual = bGo.transform.position;
 
@@ -197,16 +201,18 @@ namespace Tests.Editor
             var aGo = new GameObject("A");
             aGo.transform.position = d.aPos;
             aGo.transform.LookAt(d.aDir, d.aUp - d.aPos);
+            var aCam = aGo.AddComponent<Camera>();
 
             var bGo = new GameObject("B");
             bGo.transform.position = d.bPos;
             bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
+            var bCam = bGo.AddComponent<Camera>();
 
             var mGo = new GameObject("M");
             mGo.transform.position = d.mPos;
             mGo.transform.LookAt(d.mDir, d.mUp - d.mPos);
 
-            Mirror.MirrorTransform(aGo.transform, bGo.transform, mGo.transform);
+            Mirror.MirrorTransform(aCam, bCam, mGo.transform);
 
             Vector3 bDirActual = bGo.transform.rotation * Vector3.forward;
 
@@ -220,16 +226,18 @@ namespace Tests.Editor
             var aGo = new GameObject("A");
             aGo.transform.position = d.aPos;
             aGo.transform.LookAt(d.aDir, d.aUp - d.aPos);
+            var aCam = aGo.AddComponent<Camera>();
 
             var bGo = new GameObject("B");
             bGo.transform.position = d.bPos;
             bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
+            var bCam = bGo.AddComponent<Camera>();
 
             var mGo = new GameObject("M");
             mGo.transform.position = d.mPos;
             mGo.transform.LookAt(d.mDir, d.mUp - d.mPos);
 
-            Mirror.MirrorTransform(aGo.transform, bGo.transform, mGo.transform);
+            Mirror.MirrorTransform(aCam, bCam, mGo.transform);
 
             Vector3 bUpActual = bGo.transform.rotation * Vector3.up;
 
