@@ -69,7 +69,8 @@ public class Mirror : MonoBehaviour
     private Camera GetMirrorCamera(Camera camera)
     {
         if (_mirrorCameras.TryGetValue(camera, out var mirrorCamera))
-            return mirrorCamera;
+            if (mirrorCamera != null)
+                return mirrorCamera;
 
         mirrorCamera = CreateMirrorCamera(camera);
         _mirrorCameras[camera] = mirrorCamera;
@@ -92,7 +93,8 @@ public class Mirror : MonoBehaviour
     private RenderTexture GetRenderTexture(Camera camera)
     {
         if (_renderTextures.TryGetValue(camera, out var renderTexture))
-            return renderTexture;
+            if (renderTexture != null)
+                return renderTexture;
 
         renderTexture = CreateRenderTexture(camera);
         _renderTextures[camera] = renderTexture;
