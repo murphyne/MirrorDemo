@@ -128,7 +128,7 @@ namespace Tests.Editor
 
         private static void WriteFile(string hash, byte[] bytes)
         {
-            const string dirPathRel = "TestResults";
+            const string dirPathRel = "Assets/Scripts/Tests/DisplayTextures";
             System.IO.Directory.CreateDirectory(dirPathRel);
 
             var fileName = $"test-{hash}.png";
