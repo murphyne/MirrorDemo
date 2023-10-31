@@ -124,7 +124,7 @@ namespace Tests.Editor
             var bytes = targetTexture.EncodeToPNG();
             var hash = DataHash.Hash(_data);
 
-            WriteFile(hash, bytes);
+            WriteFile(bytes, hash);
 
             float ToXPixel(float xWorld) =>
                 Mathf.Lerp(XMinPixel, XMaxPixel, Mathf.InverseLerp(XMinWorld, XMaxWorld, xWorld));
@@ -133,7 +133,7 @@ namespace Tests.Editor
                 Mathf.Lerp(ZMinPixel, ZMaxPixel, Mathf.InverseLerp(ZMinWorld, ZMaxWorld, zWorld));
         }
 
-        private static void WriteFile(string hash, byte[] bytes)
+        private static void WriteFile(byte[] bytes, string hash)
         {
             const string dirPathRel = "Assets/Scripts/Tests/DisplayTextures";
             System.IO.Directory.CreateDirectory(dirPathRel);

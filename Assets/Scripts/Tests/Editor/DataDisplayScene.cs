@@ -69,10 +69,10 @@ namespace Tests.Editor
             mGizmo.up = _data.mUp;
 
             var hash = DataHash.Hash(_data);
-            WriteFile(hash, scene);
+            WriteFile(scene, hash);
         }
 
-        private static void WriteFile(string hash, Scene scene)
+        private static void WriteFile(Scene scene, string hash)
         {
             const string dirPathRel = "Assets/Scripts/Tests/DisplayScenes";
             System.IO.Directory.CreateDirectory(dirPathRel);
