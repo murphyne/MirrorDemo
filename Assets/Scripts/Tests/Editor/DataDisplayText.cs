@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 
 namespace Tests.Editor
@@ -22,9 +23,12 @@ namespace Tests.Editor
             {
                 for (int x = XMin; x <= XMax; x++)
                 {
-                    var cell = Cell(_data, x, z);
+                    var cellString = InitCellString(x, z);
+                    var symbols = GetSymbols(_data, x, z);
+                    var symbolsString = GetSymbolsString(symbols);
+                    cellString = FillString(cellString, symbolsString);
 
-                    stringBuilder.Append(cell);
+                    stringBuilder.Append(cellString);
                 }
 
                 stringBuilder.Append('\n');
@@ -33,20 +37,22 @@ namespace Tests.Editor
             return stringBuilder.ToString();
         }
 
-        private static string Cell(Data data, int x, int z)
+        private static IReadOnlyList<char> GetSymbols(Data data, int x, int z)
         {
-            bool aPX = x == data.aPos.x;
-            bool aPZ = z == data.aPos.z;
-            bool aDX = x == data.aDir.x;
-            bool aDZ = z == data.aDir.z;
-            bool bPX = x == data.bPos.x;
-            bool bPZ = z == data.bPos.z;
-            bool bDX = x == data.bDir.x;
-            bool bDZ = z == data.bDir.z;
-            bool mPX = x == data.mPos.x;
-            bool mPZ = z == data.mPos.z;
-            bool mDX = x == data.mDir.x;
-            bool mDZ = z == data.mDir.z;
+            var symbols = new List<char>();
+
+            if (x == data.aPos.x && z == data.aPos.z) symbols.Add('A');
+            if (x == data.aDir.x && z == data.aDir.z) symbols.Add('a');
+            if (x == data.bPos.x && z == data.bPos.z) symbols.Add('B');
+            if (x == data.bDir.x && z == data.bDir.z) symbols.Add('b');
+            if (x == data.mPos.x && z == data.mPos.z) symbols.Add('M');
+            if (x == data.mDir.x && z == data.mDir.z) symbols.Add('m');
+
+            return symbols;
+        }
+
+        private static string InitCellString(int x, int z)
+        {
             bool xMin = x == XMin;
             bool xMax = x == XMax;
             bool zMin = z == ZMin;
@@ -54,18 +60,7 @@ namespace Tests.Editor
             bool x0 = x == X0;
             bool z0 = z == Z0;
 
-            var cell = false ? string.Empty
-                : (aPX && aPZ && bPX && bPZ) ? "A⁄B"
-                : (aDX && aDZ && bDX && bDZ) ? "a⁄b"
-                : (aDX && aDZ && mDX && mDZ) ? "a⁄m"
-                : (bDX && bDZ && mDX && mDZ) ? "b⁄m"
-                : (mPX && mPZ && mDX && mDZ) ? "M⁄m"
-                : (aPX && aPZ) ? " A "
-                : (bPX && bPZ) ? " B "
-                : (aDX && aDZ) ? " a "
-                : (bDX && bDZ) ? " b "
-                : (mPX && mPZ) ? " M "
-                : (mDX && mDZ) ? " m "
+            return false ? string.Empty
                 : (x0 && zMin) ? $"{ZMin,2} "
                 : (x0 && zMax) ? $"{ZMax,2} "
                 : (z0 && xMin) ? $"{XMin,2} "
@@ -74,7 +69,37 @@ namespace Tests.Editor
                 : (z0) ? "───"
                 : (x0) ? " │ "
                 : " · ";
-            return cell;
+        }
+
+        private static string GetSymbolsString(IReadOnlyList<char> chars)
+        {
+            if (chars.Count == 0)
+                return "   ";
+
+            if (chars.Count == 1)
+                return $" {chars[0]} ";
+
+            if (chars.Count == 2)
+                return $"{chars[0]}/{chars[1]}";
+
+            if (chars.Count == 3)
+                return $"{chars[0]}{chars[1]}{chars[2]}";
+
+            return "...";
+        }
+
+        private static string FillString(string original, string substitute)
+        {
+            var originalChars = original.ToCharArray();
+
+            for (var i = 0; i < originalChars.Length; i++)
+            {
+                var substituteChar = substitute[i];
+                if (!char.IsWhiteSpace(substituteChar))
+                    originalChars[i] = substituteChar;
+            }
+
+            return new string(originalChars);
         }
     }
 }
