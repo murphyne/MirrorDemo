@@ -49,47 +49,10 @@ namespace Tests.Editor
 
             var texture = new Texture2D(TextureSourceWidth, TextureSourceHeight, TextureFormat.RGBA32, false);
 
-            // Draw background.
-            for (int zPixel = ZMinPixel; zPixel <= ZMaxPixel; zPixel++)
-            {
-                for (int xPixel = XMinPixel; xPixel <= XMaxPixel; xPixel++)
-                {
-                    texture.SetPixel(xPixel, zPixel, ColorBack);
-                }
-            }
-
-            // Draw grid.
-            for (int zWorld = ZMinWorld; zWorld <= ZMaxWorld; zWorld++)
-            {
-                var zPixel = (int)ToZPixel(zWorld);
-                for (int xPixel = XMinPixel; xPixel <= XMaxPixel; xPixel++)
-                {
-                    texture.SetPixel(xPixel, zPixel, ColorGrid);
-                }
-            }
-            for (int xWorld = XMinWorld; xWorld <= XMaxWorld; xWorld++)
-            {
-                var xPixel = (int)ToXPixel(xWorld);
-                for (int zPixel = ZMinPixel; zPixel <= ZMaxPixel; zPixel++)
-                {
-                    texture.SetPixel(xPixel, zPixel, ColorGrid);
-                }
-            }
-
-            // Draw axes.
-            for (int xPixel = XMinPixel; xPixel <= XMaxPixel; xPixel++) texture.SetPixel(xPixel, Z0Pixel, ColorAxis);
-            for (int zPixel = ZMinPixel; zPixel <= ZMaxPixel; zPixel++) texture.SetPixel(X0Pixel, zPixel, ColorAxis);
-
-            // Draw dot grid.
-            for (int zWorld = ZMinWorld; zWorld <= ZMaxWorld; zWorld++)
-            {
-                var zPixel = (int)ToZPixel(zWorld);
-                for (int xWorld = XMinWorld; xWorld <= XMaxWorld; xWorld++)
-                {
-                    var xPixel = (int)ToXPixel(xWorld);
-                    texture.SetPixel(xPixel, zPixel, ColorDot);
-                }
-            }
+            DrawBackground(texture, ColorBack);
+            DrawGrid(texture, ColorGrid);
+            DrawAxes(texture, ColorAxis);
+            DrawDotGrid(texture, ColorDot);
 
             var aPosXPixel = (int)ToXPixel(aPosWorld.x);
             var bPosXPixel = (int)ToXPixel(bPosWorld.x);
@@ -125,12 +88,6 @@ namespace Tests.Editor
             var hash = DataHash.Hash(_data);
 
             WriteFile(bytes, hash);
-
-            float ToXPixel(float xWorld) =>
-                Mathf.Lerp(XMinPixel, XMaxPixel, Mathf.InverseLerp(XMinWorld, XMaxWorld, xWorld));
-
-            float ToZPixel(float zWorld) =>
-                Mathf.Lerp(ZMinPixel, ZMaxPixel, Mathf.InverseLerp(ZMinWorld, ZMaxWorld, zWorld));
         }
 
         private static void WriteFile(byte[] bytes, string hash)
@@ -166,6 +123,56 @@ namespace Tests.Editor
             }
 
             return target;
+        }
+
+        private static void DrawBackground(Texture2D texture, Color color)
+        {
+            for (int zPixel = ZMinPixel; zPixel <= ZMaxPixel; zPixel++)
+            {
+                for (int xPixel = XMinPixel; xPixel <= XMaxPixel; xPixel++)
+                {
+                    texture.SetPixel(xPixel, zPixel, color);
+                }
+            }
+        }
+
+        private static void DrawGrid(Texture2D texture, Color color)
+        {
+            for (int zWorld = ZMinWorld; zWorld <= ZMaxWorld; zWorld++)
+            {
+                var zPixel = (int)ToZPixel(zWorld);
+                for (int xPixel = XMinPixel; xPixel <= XMaxPixel; xPixel++)
+                {
+                    texture.SetPixel(xPixel, zPixel, color);
+                }
+            }
+            for (int xWorld = XMinWorld; xWorld <= XMaxWorld; xWorld++)
+            {
+                var xPixel = (int)ToXPixel(xWorld);
+                for (int zPixel = ZMinPixel; zPixel <= ZMaxPixel; zPixel++)
+                {
+                    texture.SetPixel(xPixel, zPixel, color);
+                }
+            }
+        }
+
+        private static void DrawAxes(Texture2D texture, Color color)
+        {
+            for (int xPixel = XMinPixel; xPixel <= XMaxPixel; xPixel++) texture.SetPixel(xPixel, Z0Pixel, color);
+            for (int zPixel = ZMinPixel; zPixel <= ZMaxPixel; zPixel++) texture.SetPixel(X0Pixel, zPixel, color);
+        }
+
+        private static void DrawDotGrid(Texture2D texture, Color color)
+        {
+            for (int zWorld = ZMinWorld; zWorld <= ZMaxWorld; zWorld++)
+            {
+                var zPixel = (int)ToZPixel(zWorld);
+                for (int xWorld = XMinWorld; xWorld <= XMaxWorld; xWorld++)
+                {
+                    var xPixel = (int)ToXPixel(xWorld);
+                    texture.SetPixel(xPixel, zPixel, color);
+                }
+            }
         }
 
         private static void DrawPlus(Texture2D texture, int x, int y, Color color)
@@ -224,5 +231,11 @@ namespace Tests.Editor
                 yPixel += dy;
             }
         }
+
+        private static float ToXPixel(float xWorld) =>
+            Mathf.Lerp(XMinPixel, XMaxPixel, Mathf.InverseLerp(XMinWorld, XMaxWorld, xWorld));
+
+        private static float ToZPixel(float zWorld) =>
+            Mathf.Lerp(ZMinPixel, ZMaxPixel, Mathf.InverseLerp(ZMinWorld, ZMaxWorld, zWorld));
     }
 }
