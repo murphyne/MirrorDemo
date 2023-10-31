@@ -2,12 +2,19 @@ using System.Text;
 
 namespace Tests.Editor
 {
-    public static class DataDisplayText
+    public class DataDisplayText
     {
         private const int XMin = -5, XMax = 5, X0 = 0;
         private const int ZMin = -5, ZMax = 5, Z0 = 0;
 
-        public static string Render(Data data)
+        private readonly Data _data;
+
+        public DataDisplayText(Data data)
+        {
+            _data = data;
+        }
+
+        public string Render()
         {
             var stringBuilder = new StringBuilder();
 
@@ -15,7 +22,7 @@ namespace Tests.Editor
             {
                 for (int x = XMin; x <= XMax; x++)
                 {
-                    var cell = Cell(data, x, z);
+                    var cell = Cell(_data, x, z);
 
                     stringBuilder.Append(cell);
                 }

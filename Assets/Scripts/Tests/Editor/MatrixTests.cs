@@ -55,21 +55,21 @@ namespace Tests.Editor
         [TestCaseSource(typeof(MatrixTests), nameof(MatrixTestCaseSource))]
         public void DataSceneTest(Data d)
         {
-            DataDisplayScene.Render(d);
+            new DataDisplayScene(d).Render();
         }
 
         [Test]
         [TestCaseSource(typeof(MatrixTests), nameof(MatrixTestCaseSource))]
         public void DataTextureTest(Data d)
         {
-            DataDisplayTexture.Render(d);
+            new DataDisplayTexture(d).Render();
         }
 
         [Test]
         [TestCaseSource(typeof(MatrixTests), nameof(MatrixTestCaseSource))]
         public void DataTextTest(Data d)
         {
-            var result = DataDisplayText.Render(d);
+            var result = new DataDisplayText(d).Render();
             Debug.Log(result);
         }
 

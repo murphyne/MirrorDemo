@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Tests.Editor
 {
-    public static class DataDisplayTexture
+    public class DataDisplayTexture
     {
         private const int XMinWorld = -5, XMaxWorld = 5;
         private const int ZMinWorld = -5, ZMaxWorld = 5;
@@ -21,16 +21,23 @@ namespace Tests.Editor
         private const int TextureSourceWidth = XMaxPixel + 1;
         private const int TextureSourceHeight = ZMaxPixel + 1;
 
-        public static void Render(Data data)
+        private readonly Data _data;
+
+        public DataDisplayTexture(Data data)
         {
-            var aPosWorld = data.aPos;
-            var bPosWorld = data.bPos;
-            var aDirWorld = data.aDir;
-            var bDirWorld = data.bDir;
-            var mPosCWorld = data.mPos;
-            var mDirFWorld = data.mDir;
-            var mDirLWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, data.mUp);
-            var mDirRWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, data.mUp * -1);
+            _data = data;
+        }
+
+        public void Render()
+        {
+            var aPosWorld = _data.aPos;
+            var bPosWorld = _data.bPos;
+            var aDirWorld = _data.aDir;
+            var bDirWorld = _data.bDir;
+            var mPosCWorld = _data.mPos;
+            var mDirFWorld = _data.mDir;
+            var mDirLWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, _data.mUp);
+            var mDirRWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, _data.mUp * -1);
 
             var colorBack = new Color(0.90f, 0.90f, 0.90f);
             var colorGrid = new Color(0.85f, 0.85f, 0.85f);
@@ -115,7 +122,7 @@ namespace Tests.Editor
 
             var targetTexture = Resize(texture, 10);
             var bytes = targetTexture.EncodeToPNG();
-            var hash = DataHash.Hash(data);
+            var hash = DataHash.Hash(_data);
 
             WriteFile(hash, bytes);
 
