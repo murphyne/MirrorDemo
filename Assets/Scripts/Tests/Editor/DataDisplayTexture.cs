@@ -18,6 +18,14 @@ namespace Tests.Editor
         private static readonly int X0Pixel = (CellLenPixel + 1) * Mathf.Abs(XMinWorld);
         private static readonly int Z0Pixel = (CellLenPixel + 1) * Mathf.Abs(ZMinWorld);
 
+        private static readonly Color ColorBack = new Color(0.90f, 0.90f, 0.90f);
+        private static readonly Color ColorGrid = new Color(0.85f, 0.85f, 0.85f);
+        private static readonly Color ColorAxis = new Color(0.75f, 0.75f, 0.75f);
+        private static readonly Color ColorDot = new Color(0.50f, 0.50f, 0.50f);
+        private static readonly Color ColorA = new Color(0.70f, 0.20f, 0.10f);
+        private static readonly Color ColorB = new Color(0.20f, 0.40f, 0.70f);
+        private static readonly Color ColorM = new Color(0.90f, 0.40f, 0.90f);
+
         private const int TextureSourceWidth = XMaxPixel + 1;
         private const int TextureSourceHeight = ZMaxPixel + 1;
 
@@ -39,14 +47,6 @@ namespace Tests.Editor
             var mDirLWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, _data.mUp);
             var mDirRWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, _data.mUp * -1);
 
-            var colorBack = new Color(0.90f, 0.90f, 0.90f);
-            var colorGrid = new Color(0.85f, 0.85f, 0.85f);
-            var colorAxis = new Color(0.75f, 0.75f, 0.75f);
-            var colorDot = new Color(0.50f, 0.50f, 0.50f);
-            var colorA = new Color(0.70f, 0.20f, 0.10f);
-            var colorB = new Color(0.20f, 0.40f, 0.70f);
-            var colorM = new Color(0.90f, 0.40f, 0.90f);
-
             var texture = new Texture2D(TextureSourceWidth, TextureSourceHeight, TextureFormat.RGBA32, false);
 
             // Draw background.
@@ -54,7 +54,7 @@ namespace Tests.Editor
             {
                 for (int xPixel = XMinPixel; xPixel <= XMaxPixel; xPixel++)
                 {
-                    texture.SetPixel(xPixel, zPixel, colorBack);
+                    texture.SetPixel(xPixel, zPixel, ColorBack);
                 }
             }
 
@@ -64,7 +64,7 @@ namespace Tests.Editor
                 var zPixel = (int)ToZPixel(zWorld);
                 for (int xPixel = XMinPixel; xPixel <= XMaxPixel; xPixel++)
                 {
-                    texture.SetPixel(xPixel, zPixel, colorGrid);
+                    texture.SetPixel(xPixel, zPixel, ColorGrid);
                 }
             }
             for (int xWorld = XMinWorld; xWorld <= XMaxWorld; xWorld++)
@@ -72,13 +72,13 @@ namespace Tests.Editor
                 var xPixel = (int)ToXPixel(xWorld);
                 for (int zPixel = ZMinPixel; zPixel <= ZMaxPixel; zPixel++)
                 {
-                    texture.SetPixel(xPixel, zPixel, colorGrid);
+                    texture.SetPixel(xPixel, zPixel, ColorGrid);
                 }
             }
 
             // Draw axes.
-            for (int xPixel = XMinPixel; xPixel <= XMaxPixel; xPixel++) texture.SetPixel(xPixel, Z0Pixel, colorAxis);
-            for (int zPixel = ZMinPixel; zPixel <= ZMaxPixel; zPixel++) texture.SetPixel(X0Pixel, zPixel, colorAxis);
+            for (int xPixel = XMinPixel; xPixel <= XMaxPixel; xPixel++) texture.SetPixel(xPixel, Z0Pixel, ColorAxis);
+            for (int zPixel = ZMinPixel; zPixel <= ZMaxPixel; zPixel++) texture.SetPixel(X0Pixel, zPixel, ColorAxis);
 
             // Draw dot grid.
             for (int zWorld = ZMinWorld; zWorld <= ZMaxWorld; zWorld++)
@@ -87,7 +87,7 @@ namespace Tests.Editor
                 for (int xWorld = XMinWorld; xWorld <= XMaxWorld; xWorld++)
                 {
                     var xPixel = (int)ToXPixel(xWorld);
-                    texture.SetPixel(xPixel, zPixel, colorDot);
+                    texture.SetPixel(xPixel, zPixel, ColorDot);
                 }
             }
 
@@ -110,15 +110,15 @@ namespace Tests.Editor
             var mDirRZPixel = (int)ToZPixel(mDirRWorld.z);
 
             // Draw points.
-            DrawA(texture, aPosXPixel, aPosZPixel, colorA);
-            DrawB(texture, bPosXPixel, bPosZPixel, colorB);
-            DrawPlus(texture, mPosCXPixel, mPosCZPixel, colorM);
+            DrawA(texture, aPosXPixel, aPosZPixel, ColorA);
+            DrawB(texture, bPosXPixel, bPosZPixel, ColorB);
+            DrawPlus(texture, mPosCXPixel, mPosCZPixel, ColorM);
 
             // Draw directions.
-            DrawLine(texture, aPosXPixel, aPosZPixel, aDirXPixel, aDirZPixel, colorA);
-            DrawLine(texture, bPosXPixel, bPosZPixel, bDirXPixel, bDirZPixel, colorB);
-            DrawLine(texture, mDirLXPixel, mDirLZPixel, mDirRXPixel, mDirRZPixel, colorM);
-            DrawLine(texture, mPosCXPixel, mPosCZPixel, mDirFXPixel, mDirFZPixel, colorM);
+            DrawLine(texture, aPosXPixel, aPosZPixel, aDirXPixel, aDirZPixel, ColorA);
+            DrawLine(texture, bPosXPixel, bPosZPixel, bDirXPixel, bDirZPixel, ColorB);
+            DrawLine(texture, mDirLXPixel, mDirLZPixel, mDirRXPixel, mDirRZPixel, ColorM);
+            DrawLine(texture, mPosCXPixel, mPosCZPixel, mDirFXPixel, mDirFZPixel, ColorM);
 
             var targetTexture = Resize(texture, 10);
             var bytes = targetTexture.EncodeToPNG();
