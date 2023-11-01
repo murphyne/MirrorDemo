@@ -7,10 +7,12 @@ namespace Tests.Editor
     public class DataDisplayScene
     {
         private readonly Data _data;
+        private readonly string _name;
 
-        public DataDisplayScene(Data data)
+        public DataDisplayScene(Data data, string name)
         {
             _data = data;
+            _name = name;
         }
 
         public void Render()
@@ -68,16 +70,15 @@ namespace Tests.Editor
             mGizmo.dir = _data.mDir;
             mGizmo.up = _data.mUp;
 
-            var hash = DataHash.Hash(_data);
-            WriteFile(scene, hash);
+            WriteFile(scene, _name);
         }
 
-        private static void WriteFile(Scene scene, string hash)
+        private static void WriteFile(Scene scene, string name)
         {
             const string dirPathRel = "Assets/Scripts/Tests/DisplayScenes";
             System.IO.Directory.CreateDirectory(dirPathRel);
 
-            var fileName = $"test-{hash}.unity";
+            var fileName = $"test-{name}.unity";
             var filePathRel = System.IO.Path.Combine(dirPathRel, fileName);
             EditorSceneManager.SaveScene(scene, filePathRel, false);
 

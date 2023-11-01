@@ -48,10 +48,12 @@ namespace Tests.Editor
         private const int TextureSourceHeight = PaddingLenPixel + ZLenPixel + PaddingLenPixel;
 
         private readonly Data _data;
+        private readonly string _name;
 
-        public DataDisplayTexture(Data data)
+        public DataDisplayTexture(Data data, string name)
         {
             _data = data;
+            _name = name;
         }
 
         public void Render()
@@ -104,17 +106,16 @@ namespace Tests.Editor
 
             var targetTexture = Resize(texture, 10);
             var bytes = targetTexture.EncodeToPNG();
-            var hash = DataHash.Hash(_data);
 
-            WriteFile(bytes, hash);
+            WriteFile(bytes, _name);
         }
 
-        private static void WriteFile(byte[] bytes, string hash)
+        private static void WriteFile(byte[] bytes, string name)
         {
             const string dirPathRel = "Assets/Scripts/Tests/DisplayTextures";
             System.IO.Directory.CreateDirectory(dirPathRel);
 
-            var fileName = $"test-{hash}.png";
+            var fileName = $"test-{name}.png";
             var filePathRel = System.IO.Path.Combine(dirPathRel, fileName);
             System.IO.File.WriteAllBytes(filePathRel, bytes);
 
