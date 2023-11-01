@@ -10,13 +10,15 @@ namespace Tests.Editor
         private const int ZLenWorld = ZMaxWorld - ZMinWorld;
 
         private const int CellLenPixel = 9;
-        private const int XMinPixel = 0;
-        private const int ZMinPixel = 0;
-        private const int XMaxPixel = CellLenPixel * XLenWorld + XLenWorld;
-        private const int ZMaxPixel = CellLenPixel * ZLenWorld + ZLenWorld;
-
-        private static readonly int X0Pixel = (CellLenPixel + 1) * Mathf.Abs(XMinWorld);
-        private static readonly int Z0Pixel = (CellLenPixel + 1) * Mathf.Abs(ZMinWorld);
+        private const int PaddingLenPixel = 5;
+        private static readonly int X0Pixel = (int)ToXPixel(0);
+        private static readonly int Z0Pixel = (int)ToZPixel(0);
+        private const int XMinPixel = PaddingLenPixel;
+        private const int ZMinPixel = PaddingLenPixel;
+        private const int XMaxPixel = XMinPixel + (CellLenPixel + 1) * XLenWorld;
+        private const int ZMaxPixel = ZMinPixel + (CellLenPixel + 1) * ZLenWorld;
+        private const int XLenPixel = XMaxPixel - XMinPixel + 1;
+        private const int ZLenPixel = ZMaxPixel - ZMinPixel + 1;
 
         private static readonly Color ColorBack = new Color(0.90f, 0.90f, 0.90f);
         private static readonly Color ColorGrid = new Color(0.85f, 0.85f, 0.85f);
@@ -26,8 +28,8 @@ namespace Tests.Editor
         private static readonly Color ColorB = new Color(0.20f, 0.40f, 0.70f);
         private static readonly Color ColorM = new Color(0.90f, 0.40f, 0.90f);
 
-        private const int TextureSourceWidth = XMaxPixel + 1;
-        private const int TextureSourceHeight = ZMaxPixel + 1;
+        private const int TextureSourceWidth = PaddingLenPixel + XLenPixel + PaddingLenPixel;
+        private const int TextureSourceHeight = PaddingLenPixel + ZLenPixel + PaddingLenPixel;
 
         private readonly Data _data;
 
@@ -127,9 +129,9 @@ namespace Tests.Editor
 
         private static void DrawBackground(Texture2D texture, Color color)
         {
-            for (int zPixel = ZMinPixel; zPixel <= ZMaxPixel; zPixel++)
+            for (int zPixel = 0; zPixel <= TextureSourceHeight; zPixel++)
             {
-                for (int xPixel = XMinPixel; xPixel <= XMaxPixel; xPixel++)
+                for (int xPixel = 0; xPixel <= TextureSourceWidth; xPixel++)
                 {
                     texture.SetPixel(xPixel, zPixel, color);
                 }
