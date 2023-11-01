@@ -19,7 +19,7 @@ namespace Tests.Editor
         {
             var stringBuilder = new StringBuilder();
 
-            for (int z = ZMin; z <= ZMax; z++)
+            for (int z = ZMax; z >= ZMin; z--)
             {
                 for (int x = XMin; x <= XMax; x++)
                 {
