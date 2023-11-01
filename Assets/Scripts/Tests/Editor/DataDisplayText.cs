@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace Tests.Editor
 {
@@ -41,12 +42,12 @@ namespace Tests.Editor
         {
             var symbols = new List<char>();
 
-            if (x == data.aPos.x && z == data.aPos.z) symbols.Add('A');
-            if (x == data.aDir.x && z == data.aDir.z) symbols.Add('a');
-            if (x == data.bPos.x && z == data.bPos.z) symbols.Add('B');
-            if (x == data.bDir.x && z == data.bDir.z) symbols.Add('b');
-            if (x == data.mPos.x && z == data.mPos.z) symbols.Add('M');
-            if (x == data.mDir.x && z == data.mDir.z) symbols.Add('m');
+            if (Eq(x, data.aPos.x) && Eq(z, data.aPos.z)) symbols.Add('A');
+            if (Eq(x, data.aDir.x) && Eq(z, data.aDir.z)) symbols.Add('a');
+            if (Eq(x, data.bPos.x) && Eq(z, data.bPos.z)) symbols.Add('B');
+            if (Eq(x, data.bDir.x) && Eq(z, data.bDir.z)) symbols.Add('b');
+            if (Eq(x, data.mPos.x) && Eq(z, data.mPos.z)) symbols.Add('M');
+            if (Eq(x, data.mDir.x) && Eq(z, data.mDir.z)) symbols.Add('m');
 
             return symbols;
         }
@@ -100,6 +101,12 @@ namespace Tests.Editor
             }
 
             return new string(originalChars);
+        }
+
+        private static bool Eq(float f1, float f2)
+        {
+            const double tolerance = 0.1f;
+            return Mathf.Abs(f1 - f2) < tolerance;
         }
     }
 }
