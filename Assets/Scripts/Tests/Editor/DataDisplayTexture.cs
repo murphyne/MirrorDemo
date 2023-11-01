@@ -11,7 +11,7 @@ namespace Tests.Editor
         private const int ZLenWorld = ZMaxWorld - ZMinWorld;
 
         private const int CellLenPixel = 9;
-        private const int PaddingLenPixel = 5;
+        private const int PaddingLenPixel = 6;
         private static readonly int X0Pixel = (int)ToXPixel(0);
         private static readonly int Z0Pixel = (int)ToZPixel(0);
         private const int XMinPixel = PaddingLenPixel;
@@ -23,8 +23,9 @@ namespace Tests.Editor
 
         private static readonly Color ColorBack = new Color(0.90f, 0.90f, 0.90f);
         private static readonly Color ColorGrid = new Color(0.85f, 0.85f, 0.85f);
-        private static readonly Color ColorAxis = new Color(0.75f, 0.75f, 0.75f);
-        private static readonly Color ColorDot = new Color(0.50f, 0.50f, 0.50f);
+        private static readonly Color ColorAxis = new Color(0.80f, 0.80f, 0.80f);
+        private static readonly Color ColorDots = new Color(0.70f, 0.70f, 0.70f);
+        private static readonly Color ColorNums = new Color(0.60f, 0.60f, 0.60f);
         private static readonly Color ColorA = new Color(0.70f, 0.20f, 0.10f);
         private static readonly Color ColorB = new Color(0.20f, 0.40f, 0.70f);
         private static readonly Color ColorM = new Color(0.90f, 0.40f, 0.90f);
@@ -69,8 +70,8 @@ namespace Tests.Editor
             DrawBackground(texture, ColorBack);
             DrawGrid(texture, ColorGrid);
             DrawAxes(texture, ColorAxis);
-            DrawDotGrid(texture, ColorDot);
-            DrawLimits(texture, ColorDot);
+            DrawDotGrid(texture, ColorDots);
+            DrawLimits(texture, ColorNums);
 
             var aPosXPixel = (int)ToXPixel(aPosWorld.x);
             var bPosXPixel = (int)ToXPixel(bPosWorld.x);
