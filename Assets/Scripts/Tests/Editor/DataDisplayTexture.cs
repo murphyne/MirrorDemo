@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Tests.Editor
@@ -28,6 +29,20 @@ namespace Tests.Editor
         private static readonly Color ColorB = new Color(0.20f, 0.40f, 0.70f);
         private static readonly Color ColorM = new Color(0.90f, 0.40f, 0.90f);
 
+        private const string AtlasSymbols = " 0123456789+-AB";
+        private static readonly string[,] AtlasPixels = new[,]
+        {
+            // Disable "wrap lines" and squint you eyes.
+            { "   ","███"," █ ","███","███","█ █","███","███","███","███","███","   ","   "," █ ","██ " },
+            { "   ","█ █","██ ","  █","  █","█ █","█  ","█  ","  █","█ █","█ █"," █ ","   ","█ █","█ █" },
+            { "   ","█ █"," █ ","███","███","███","███","███"," █ ","███","███","███","███","███","██ " },
+            { "   ","█ █"," █ ","█  ","  █","  █","  █","█ █","█  ","█ █","  █"," █ ","   ","█ █","█ █" },
+            { "   ","███","███","███","███","  █","███","███","█  ","███","███","   ","   ","█ █","██ " },
+        };
+
+        private static readonly int SymbolHeight = AtlasPixels.GetLength(0);
+        private static readonly int SymbolWidth = AtlasPixels[0,0].Length;
+
         private const int TextureSourceWidth = PaddingLenPixel + XLenPixel + PaddingLenPixel;
         private const int TextureSourceHeight = PaddingLenPixel + ZLenPixel + PaddingLenPixel;
 
@@ -55,6 +70,7 @@ namespace Tests.Editor
             DrawGrid(texture, ColorGrid);
             DrawAxes(texture, ColorAxis);
             DrawDotGrid(texture, ColorDot);
+            DrawLimits(texture, ColorDot);
 
             var aPosXPixel = (int)ToXPixel(aPosWorld.x);
             var bPosXPixel = (int)ToXPixel(bPosWorld.x);
@@ -75,9 +91,9 @@ namespace Tests.Editor
             var mDirRZPixel = (int)ToZPixel(mDirRWorld.z);
 
             // Draw points.
-            DrawA(texture, aPosXPixel, aPosZPixel, ColorA);
-            DrawB(texture, bPosXPixel, bPosZPixel, ColorB);
-            DrawPlus(texture, mPosCXPixel, mPosCZPixel, ColorM);
+            DrawSymbol(texture, aPosXPixel, aPosZPixel, 'A', ColorA);
+            DrawSymbol(texture, bPosXPixel, bPosZPixel, 'B', ColorB);
+            DrawSymbol(texture, mPosCXPixel, mPosCZPixel, '+', ColorM);
 
             // Draw directions.
             DrawLine(texture, aPosXPixel, aPosZPixel, aDirXPixel, aDirZPixel, ColorA);
@@ -177,30 +193,12 @@ namespace Tests.Editor
             }
         }
 
-        private static void DrawPlus(Texture2D texture, int x, int y, Color color)
+        private static void DrawLimits(Texture2D texture, Color color)
         {
-            texture.SetPixel(x - 1, y, color);
-            texture.SetPixel(x + 1, y, color);
-            texture.SetPixel(x, y - 1, color);
-            texture.SetPixel(x, y + 1, color);
-        }
-
-        private static void DrawA(Texture2D texture, int x, int y, Color color)
-        {
-            DrawLine(texture, x - 1, y + 1, x - 1, y - 2, color);
-            DrawLine(texture, x + 1, y + 1, x + 1, y - 2, color);
-            texture.SetPixel(x, y + 2, color);
-            texture.SetPixel(x, y, color);
-        }
-
-        private static void DrawB(Texture2D texture, int x, int y, Color color)
-        {
-            DrawLine(texture, x - 1, y + 2, x - 1, y - 2, color);
-            texture.SetPixel(x, y + 2, color);
-            texture.SetPixel(x + 1, y + 1, color);
-            texture.SetPixel(x, y, color);
-            texture.SetPixel(x + 1, y - 1, color);
-            texture.SetPixel(x, y - 2, color);
+            DrawSymbols(texture, X0Pixel, ZMaxPixel, $"{ZMaxWorld,2} ", color);
+            DrawSymbols(texture, X0Pixel, ZMinPixel, $"{ZMinWorld,2} ", color);
+            DrawSymbols(texture, XMaxPixel, Z0Pixel, $"{XMaxWorld,2} ", color);
+            DrawSymbols(texture, XMinPixel, Z0Pixel, $"{XMinWorld,2} ", color);
         }
 
         private static void DrawBlock(Texture2D texture, int x0, int y0, int size, Color color)
@@ -232,6 +230,42 @@ namespace Tests.Editor
                 xPixel += dx;
                 yPixel += dy;
             }
+        }
+
+        private static void DrawSymbols(Texture2D texture, int x, int y, string symbols, Color color)
+        {
+            const int symbolsSpacing = 1;
+
+            for (int i = 0; i < symbols.Length; i++)
+            {
+                var xOffset = (i - 1) * (SymbolWidth + symbolsSpacing);
+                DrawSymbol(texture, x + xOffset, y, symbols[i], color);
+            }
+        }
+
+        private static void DrawSymbol(Texture2D texture, int x, int y, char symbol, Color color)
+        {
+            for (int symbolX = 0; symbolX < SymbolWidth; symbolX++)
+            {
+                for (int symbolY = 0; symbolY < SymbolHeight; symbolY++)
+                {
+                    if (ReadAtlas(symbol, symbolX, symbolY))
+                    {
+                        texture.SetPixel(x - 1 + symbolX, y - 2 + symbolY, color);
+                    }
+                }
+            }
+        }
+
+        private static bool ReadAtlas(char symbol, int x, int y)
+        {
+            var lineIndex = SymbolHeight - 1 - y;
+            var symbolIndex = AtlasSymbols.IndexOf(symbol);
+            if (symbolIndex == -1) throw new KeyNotFoundException("The given symbol was not present in the atlas.");
+
+            var pixel = AtlasPixels[lineIndex,symbolIndex][x];
+            var mask = !char.IsWhiteSpace(pixel);
+            return mask;
         }
 
         private static float ToXPixel(float xWorld) =>
