@@ -64,8 +64,8 @@ namespace Tests.Editor
             var bDirWorld = _data.bDir;
             var mPosCWorld = _data.mPos;
             var mDirFWorld = _data.mDir;
-            var mDirLWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, _data.mUp);
-            var mDirRWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, _data.mUp * -1);
+            var mDirLWorld = mPosCWorld + Vector3.Cross(mDirFWorld - mPosCWorld, _data.mUp - mPosCWorld);
+            var mDirRWorld = mPosCWorld + Vector3.Cross(_data.mUp - mPosCWorld, mDirFWorld - mPosCWorld);
 
             var texture = new Texture2D(TextureSourceWidth, TextureSourceHeight, TextureFormat.RGBA32, false);
 
