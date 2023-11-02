@@ -85,7 +85,7 @@ namespace Tests.Editor
             var aCam = aGo.AddComponent<Camera>();
 
             var bGo = new GameObject("B");
-            bGo.transform.position = d.bPos;
+            // bGo.transform.position = d.bPos;
             var bCam = bGo.AddComponent<Camera>();
 
             var mGo = new GameObject("M");
@@ -99,7 +99,7 @@ namespace Tests.Editor
             var mirrorMatrix = Mirror.GetMirrorMatrix(mirrorPlane);
             bCam.worldToCameraMatrix = aCam.worldToCameraMatrix * mirrorMatrix;
 
-            Vector3 bPosActual = bGo.transform.position;
+            Vector3 bPosActual = bCam.cameraToWorldMatrix.MultiplyPoint(Vector3.zero);
 
             Assert.That(bPosActual, Is.EqualTo(d.bPos).Using(Vector3EqualityComparer.Instance));
         }
@@ -114,8 +114,8 @@ namespace Tests.Editor
             var aCam = aGo.AddComponent<Camera>();
 
             var bGo = new GameObject("B");
-            bGo.transform.position = d.bPos;
-            bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
+            // bGo.transform.position = d.bPos;
+            // bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
             var bCam = bGo.AddComponent<Camera>();
 
             var mGo = new GameObject("M");
@@ -129,7 +129,7 @@ namespace Tests.Editor
             var mirrorMatrix = Mirror.GetMirrorMatrix(mirrorPlane);
             bCam.worldToCameraMatrix = aCam.worldToCameraMatrix * mirrorMatrix;
 
-            Vector3 bDirActual = bGo.transform.rotation * Vector3.forward;
+            Vector3 bDirActual = bCam.cameraToWorldMatrix.MultiplyVector(Vector3.back);
 
             Assert.That(bDirActual.normalized, Is.EqualTo((d.bDir - d.bPos).normalized).Using(Vector3EqualityComparer.Instance));
         }
@@ -144,8 +144,8 @@ namespace Tests.Editor
             var aCam = aGo.AddComponent<Camera>();
 
             var bGo = new GameObject("B");
-            bGo.transform.position = d.bPos;
-            bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
+            // bGo.transform.position = d.bPos;
+            // bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
             var bCam = bGo.AddComponent<Camera>();
 
             var mGo = new GameObject("M");
@@ -159,7 +159,7 @@ namespace Tests.Editor
             var mirrorMatrix = Mirror.GetMirrorMatrix(mirrorPlane);
             bCam.worldToCameraMatrix = aCam.worldToCameraMatrix * mirrorMatrix;
 
-            Vector3 bUpActual = bGo.transform.rotation * Vector3.up;
+            Vector3 bUpActual = bCam.cameraToWorldMatrix.MultiplyVector(Vector3.up);
 
             Assert.That(bUpActual.normalized, Is.EqualTo((d.bUp - d.bPos).normalized).Using(Vector3EqualityComparer.Instance));
         }
@@ -174,8 +174,8 @@ namespace Tests.Editor
             var aCam = aGo.AddComponent<Camera>();
 
             var bGo = new GameObject("B");
-            bGo.transform.position = d.bPos;
-            bGo.transform.LookAt(d.bDir);
+            // bGo.transform.position = d.bPos;
+            // bGo.transform.LookAt(d.bDir);
             var bCam = bGo.AddComponent<Camera>();
 
             var mGo = new GameObject("M");
@@ -184,7 +184,7 @@ namespace Tests.Editor
 
             Mirror.MirrorTransform(aCam, bCam, mGo.transform);
 
-            Vector3 bPosActual = bGo.transform.position;
+            Vector3 bPosActual = bCam.cameraToWorldMatrix.MultiplyPoint(Vector3.zero);
 
             Assert.That(bPosActual, Is.EqualTo(d.bPos).Using(Vector3EqualityComparer.Instance));
         }
@@ -199,8 +199,8 @@ namespace Tests.Editor
             var aCam = aGo.AddComponent<Camera>();
 
             var bGo = new GameObject("B");
-            bGo.transform.position = d.bPos;
-            bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
+            // bGo.transform.position = d.bPos;
+            // bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
             var bCam = bGo.AddComponent<Camera>();
 
             var mGo = new GameObject("M");
@@ -209,7 +209,7 @@ namespace Tests.Editor
 
             Mirror.MirrorTransform(aCam, bCam, mGo.transform);
 
-            Vector3 bDirActual = bGo.transform.rotation * Vector3.forward;
+            Vector3 bDirActual = bCam.cameraToWorldMatrix.MultiplyVector(Vector3.back);
 
             Assert.That(bDirActual.normalized, Is.EqualTo((d.bDir - d.bPos).normalized).Using(Vector3EqualityComparer.Instance));
         }
@@ -224,8 +224,8 @@ namespace Tests.Editor
             var aCam = aGo.AddComponent<Camera>();
 
             var bGo = new GameObject("B");
-            bGo.transform.position = d.bPos;
-            bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
+            // bGo.transform.position = d.bPos;
+            // bGo.transform.LookAt(d.bDir, d.bUp - d.bPos);
             var bCam = bGo.AddComponent<Camera>();
 
             var mGo = new GameObject("M");
@@ -234,7 +234,7 @@ namespace Tests.Editor
 
             Mirror.MirrorTransform(aCam, bCam, mGo.transform);
 
-            Vector3 bUpActual = bGo.transform.rotation * Vector3.up;
+            Vector3 bUpActual = bCam.cameraToWorldMatrix.MultiplyVector(Vector3.up);
 
             Assert.That(bUpActual.normalized, Is.EqualTo((d.bUp - d.bPos).normalized).Using(Vector3EqualityComparer.Instance));
         }
