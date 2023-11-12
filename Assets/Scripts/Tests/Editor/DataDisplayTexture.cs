@@ -112,7 +112,7 @@ namespace Tests.Editor
 
         private static void WriteFile(byte[] bytes, string name)
         {
-            const string dirPathRel = "Assets/Scripts/Tests/DisplayTextures";
+            const string dirPathRel = "Assets/Scripts/Tests/MirrorData/Textures";
             System.IO.Directory.CreateDirectory(dirPathRel);
 
             var fileName = $"test-{name}.png";

@@ -75,7 +75,7 @@ namespace Tests.Editor
 
         private static void WriteFile(Scene scene, string name)
         {
-            const string dirPathRel = "Assets/Scripts/Tests/DisplayScenes";
+            const string dirPathRel = "Assets/Scripts/Tests/MirrorData/Scenes";
             System.IO.Directory.CreateDirectory(dirPathRel);
 
             var fileName = $"test-{name}.unity";
