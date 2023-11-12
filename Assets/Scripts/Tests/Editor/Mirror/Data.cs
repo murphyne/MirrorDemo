@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tests.Editor
+namespace Tests.Editor.Mirror
 {
     public class Data
     {

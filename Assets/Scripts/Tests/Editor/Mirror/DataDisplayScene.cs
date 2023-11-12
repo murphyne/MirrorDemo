@@ -2,7 +2,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Tests.Editor
+namespace Tests.Editor.Mirror
 {
     public class DataDisplayScene
     {

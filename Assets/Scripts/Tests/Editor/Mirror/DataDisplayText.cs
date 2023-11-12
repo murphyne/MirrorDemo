@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace Tests.Editor
+namespace Tests.Editor.Mirror
 {
     public class DataDisplayText
     {
