@@ -5,8 +5,14 @@
 /Build
 /Builds
 /Library
+/Logs
 /obj
 /Temp
 
 *.csproj
 *.sln
+
+/Assets/Scripts/Tests/DisplayScenes.meta
+/Assets/Scripts/Tests/DisplayTextures.meta
+/Assets/Scripts/Tests/DisplayScenes
+/Assets/Scripts/Tests/DisplayTextures
