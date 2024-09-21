@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools.Utils;
 
-namespace Tests.Editor
+namespace Tests.Editor.Mirror
 {
     [TestFixture]
     public class MatrixTests
@@ -95,8 +95,8 @@ namespace Tests.Editor
             var point = mGo.transform.position;
             var normal = mGo.transform.TransformDirection(Vector3.back);
 
-            var mirrorPlane = Mirror.GetPlane(point, normal);
-            var mirrorMatrix = Mirror.GetMirrorMatrix(mirrorPlane);
+            var mirrorPlane = global::Mirror.GetPlane(point, normal);
+            var mirrorMatrix = global::Mirror.GetMirrorMatrix(mirrorPlane);
             bCam.worldToCameraMatrix = aCam.worldToCameraMatrix * mirrorMatrix;
 
             Vector3 bPosActual = bCam.cameraToWorldMatrix.MultiplyPoint(Vector3.zero);
@@ -125,8 +125,8 @@ namespace Tests.Editor
             var point = mGo.transform.position;
             var normal = mGo.transform.TransformDirection(Vector3.back);
 
-            var mirrorPlane = Mirror.GetPlane(point, normal);
-            var mirrorMatrix = Mirror.GetMirrorMatrix(mirrorPlane);
+            var mirrorPlane = global::Mirror.GetPlane(point, normal);
+            var mirrorMatrix = global::Mirror.GetMirrorMatrix(mirrorPlane);
             bCam.worldToCameraMatrix = aCam.worldToCameraMatrix * mirrorMatrix;
 
             Vector3 bDirActual = bCam.cameraToWorldMatrix.MultiplyVector(Vector3.back);
@@ -155,8 +155,8 @@ namespace Tests.Editor
             var point = mGo.transform.position;
             var normal = mGo.transform.TransformDirection(Vector3.back);
 
-            var mirrorPlane = Mirror.GetPlane(point, normal);
-            var mirrorMatrix = Mirror.GetMirrorMatrix(mirrorPlane);
+            var mirrorPlane = global::Mirror.GetPlane(point, normal);
+            var mirrorMatrix = global::Mirror.GetMirrorMatrix(mirrorPlane);
             bCam.worldToCameraMatrix = aCam.worldToCameraMatrix * mirrorMatrix;
 
             Vector3 bUpActual = bCam.cameraToWorldMatrix.MultiplyVector(Vector3.up);
@@ -182,7 +182,7 @@ namespace Tests.Editor
             mGo.transform.position = d.mPos;
             mGo.transform.LookAt(d.mDir);
 
-            Mirror.MirrorTransform(aCam, bCam, mGo.transform);
+            global::Mirror.MirrorTransform(aCam, bCam, mGo.transform);
 
             Vector3 bPosActual = bCam.cameraToWorldMatrix.MultiplyPoint(Vector3.zero);
 
@@ -207,7 +207,7 @@ namespace Tests.Editor
             mGo.transform.position = d.mPos;
             mGo.transform.LookAt(d.mDir, d.mUp - d.mPos);
 
-            Mirror.MirrorTransform(aCam, bCam, mGo.transform);
+            global::Mirror.MirrorTransform(aCam, bCam, mGo.transform);
 
             Vector3 bDirActual = bCam.cameraToWorldMatrix.MultiplyVector(Vector3.back);
 
@@ -232,7 +232,7 @@ namespace Tests.Editor
             mGo.transform.position = d.mPos;
             mGo.transform.LookAt(d.mDir, d.mUp - d.mPos);
 
-            Mirror.MirrorTransform(aCam, bCam, mGo.transform);
+            global::Mirror.MirrorTransform(aCam, bCam, mGo.transform);
 
             Vector3 bUpActual = bCam.cameraToWorldMatrix.MultiplyVector(Vector3.up);
 

@@ -12,7 +12,7 @@
 *.csproj
 *.sln
 
-/Assets/Scripts/Tests/DisplayScenes.meta
-/Assets/Scripts/Tests/DisplayTextures.meta
-/Assets/Scripts/Tests/DisplayScenes
-/Assets/Scripts/Tests/DisplayTextures
+/Assets/Scripts/Tests/MirrorData.meta
+/Assets/Scripts/Tests/PortalData.meta
+/Assets/Scripts/Tests/MirrorData
+/Assets/Scripts/Tests/PortalData

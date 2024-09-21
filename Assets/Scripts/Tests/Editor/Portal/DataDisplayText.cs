@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace Tests.Editor
+namespace Tests.Editor.Portal
 {
     public class DataDisplayText
     {
@@ -46,8 +46,10 @@ namespace Tests.Editor
             if (Eq(x, data.aDir.x) && Eq(z, data.aDir.z)) symbols.Add('a');
             if (Eq(x, data.bPos.x) && Eq(z, data.bPos.z)) symbols.Add('B');
             if (Eq(x, data.bDir.x) && Eq(z, data.bDir.z)) symbols.Add('b');
-            if (Eq(x, data.mPos.x) && Eq(z, data.mPos.z)) symbols.Add('M');
-            if (Eq(x, data.mDir.x) && Eq(z, data.mDir.z)) symbols.Add('m');
+            if (Eq(x, data.pPos.x) && Eq(z, data.pPos.z)) symbols.Add('P');
+            if (Eq(x, data.pDir.x) && Eq(z, data.pDir.z)) symbols.Add('p');
+            if (Eq(x, data.qPos.x) && Eq(z, data.qPos.z)) symbols.Add('Q');
+            if (Eq(x, data.qDir.x) && Eq(z, data.qDir.z)) symbols.Add('q');
 
             return symbols;
         }
