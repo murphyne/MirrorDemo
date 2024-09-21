@@ -1,23 +1,35 @@
+using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace Tests.Editor
 {
-    public static class DataDisplayText
+    public class DataDisplayText
     {
         private const int XMin = -5, XMax = 5, X0 = 0;
         private const int ZMin = -5, ZMax = 5, Z0 = 0;
 
-        public static string Render(Data data)
+        private readonly Data _data;
+
+        public DataDisplayText(Data data)
+        {
+            _data = data;
+        }
+
+        public string Render()
         {
             var stringBuilder = new StringBuilder();
 
-            for (int z = ZMin; z <= ZMax; z++)
+            for (int z = ZMax; z >= ZMin; z--)
             {
                 for (int x = XMin; x <= XMax; x++)
                 {
-                    var cell = Cell(data, x, z);
+                    var cellString = InitCellString(x, z);
+                    var symbols = GetSymbols(_data, x, z);
+                    var symbolsString = GetSymbolsString(symbols);
+                    cellString = FillString(cellString, symbolsString);
 
-                    stringBuilder.Append(cell);
+                    stringBuilder.Append(cellString);
                 }
 
                 stringBuilder.Append('\n');
@@ -26,20 +38,22 @@ namespace Tests.Editor
             return stringBuilder.ToString();
         }
 
-        private static string Cell(Data data, int x, int z)
+        private static IReadOnlyList<char> GetSymbols(Data data, int x, int z)
         {
-            bool aPX = x == data.aPos.x;
-            bool aPZ = z == data.aPos.z;
-            bool aDX = x == data.aDir.x;
-            bool aDZ = z == data.aDir.z;
-            bool bPX = x == data.bPos.x;
-            bool bPZ = z == data.bPos.z;
-            bool bDX = x == data.bDir.x;
-            bool bDZ = z == data.bDir.z;
-            bool mPX = x == data.mPos.x;
-            bool mPZ = z == data.mPos.z;
-            bool mDX = x == data.mDir.x;
-            bool mDZ = z == data.mDir.z;
+            var symbols = new List<char>();
+
+            if (Eq(x, data.aPos.x) && Eq(z, data.aPos.z)) symbols.Add('A');
+            if (Eq(x, data.aDir.x) && Eq(z, data.aDir.z)) symbols.Add('a');
+            if (Eq(x, data.bPos.x) && Eq(z, data.bPos.z)) symbols.Add('B');
+            if (Eq(x, data.bDir.x) && Eq(z, data.bDir.z)) symbols.Add('b');
+            if (Eq(x, data.mPos.x) && Eq(z, data.mPos.z)) symbols.Add('M');
+            if (Eq(x, data.mDir.x) && Eq(z, data.mDir.z)) symbols.Add('m');
+
+            return symbols;
+        }
+
+        private static string InitCellString(int x, int z)
+        {
             bool xMin = x == XMin;
             bool xMax = x == XMax;
             bool zMin = z == ZMin;
@@ -47,18 +61,7 @@ namespace Tests.Editor
             bool x0 = x == X0;
             bool z0 = z == Z0;
 
-            var cell = false ? string.Empty
-                : (aPX && aPZ && bPX && bPZ) ? "A⁄B"
-                : (aDX && aDZ && bDX && bDZ) ? "a⁄b"
-                : (aDX && aDZ && mDX && mDZ) ? "a⁄m"
-                : (bDX && bDZ && mDX && mDZ) ? "b⁄m"
-                : (mPX && mPZ && mDX && mDZ) ? "M⁄m"
-                : (aPX && aPZ) ? " A "
-                : (bPX && bPZ) ? " B "
-                : (aDX && aDZ) ? " a "
-                : (bDX && bDZ) ? " b "
-                : (mPX && mPZ) ? " M "
-                : (mDX && mDZ) ? " m "
+            return false ? string.Empty
                 : (x0 && zMin) ? $"{ZMin,2} "
                 : (x0 && zMax) ? $"{ZMax,2} "
                 : (z0 && xMin) ? $"{XMin,2} "
@@ -67,7 +70,43 @@ namespace Tests.Editor
                 : (z0) ? "───"
                 : (x0) ? " │ "
                 : " · ";
-            return cell;
+        }
+
+        private static string GetSymbolsString(IReadOnlyList<char> chars)
+        {
+            if (chars.Count == 0)
+                return "   ";
+
+            if (chars.Count == 1)
+                return $" {chars[0]} ";
+
+            if (chars.Count == 2)
+                return $"{chars[0]}/{chars[1]}";
+
+            if (chars.Count == 3)
+                return $"{chars[0]}{chars[1]}{chars[2]}";
+
+            return "...";
+        }
+
+        private static string FillString(string original, string substitute)
+        {
+            var originalChars = original.ToCharArray();
+
+            for (var i = 0; i < originalChars.Length; i++)
+            {
+                var substituteChar = substitute[i];
+                if (!char.IsWhiteSpace(substituteChar))
+                    originalChars[i] = substituteChar;
+            }
+
+            return new string(originalChars);
+        }
+
+        private static bool Eq(float f1, float f2)
+        {
+            const double tolerance = 0.1f;
+            return Mathf.Abs(f1 - f2) < tolerance;
         }
     }
 }

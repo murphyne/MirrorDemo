@@ -4,9 +4,18 @@ using UnityEngine.SceneManagement;
 
 namespace Tests.Editor
 {
-    public static class DataDisplayScene
+    public class DataDisplayScene
     {
-        public static void Render(Data data)
+        private readonly Data _data;
+        private readonly string _name;
+
+        public DataDisplayScene(Data data, string name)
+        {
+            _data = data;
+            _name = name;
+        }
+
+        public void Render()
         {
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
@@ -20,57 +29,56 @@ namespace Tests.Editor
             var aGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
             // var aGo = new GameObject();
             aGo.name = "A";
-            aGo.transform.position = data.aPos;
-            aGo.transform.LookAt(data.aDir, data.aUp - data.aPos);
+            aGo.transform.position = _data.aPos;
+            aGo.transform.LookAt(_data.aDir, _data.aUp - _data.aPos);
             aGo.transform.localScale = Vector3.one * 0.3f;
             var aGizmo = aGo.AddComponent<Gizmo>();
             aGizmo.meshPos = meshCube;
             aGizmo.meshDir = meshCube;
             aGizmo.scaleMeshDir = Vector3.one * 0.5f;
             aGizmo.color = colorA;
-            aGizmo.pos = data.aPos;
-            aGizmo.dir = data.aDir;
-            aGizmo.up = data.aUp;
+            aGizmo.pos = _data.aPos;
+            aGizmo.dir = _data.aDir;
+            aGizmo.up = _data.aUp;
 
             var bGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
             // var bGo = new GameObject();
             bGo.name = "B";
-            bGo.transform.position = data.bPos;
-            bGo.transform.LookAt(data.bDir, data.bUp - data.bPos);
+            bGo.transform.position = _data.bPos;
+            bGo.transform.LookAt(_data.bDir, _data.bUp - _data.bPos);
             bGo.transform.localScale = Vector3.one * 0.3f;
             var bGizmo = bGo.AddComponent<Gizmo>();
             bGizmo.meshPos = meshCube;
             bGizmo.meshDir = meshCube;
             bGizmo.scaleMeshDir = Vector3.one * 0.5f;
             bGizmo.color = colorB;
-            bGizmo.pos = data.bPos;
-            bGizmo.dir = data.bDir;
-            bGizmo.up = data.bUp;
+            bGizmo.pos = _data.bPos;
+            bGizmo.dir = _data.bDir;
+            bGizmo.up = _data.bUp;
 
             var mGo = GameObject.CreatePrimitive(PrimitiveType.Quad);
             // var mGo = new GameObject();
             mGo.name = "M";
-            mGo.transform.position = data.mPos;
-            mGo.transform.LookAt(data.mDir, data.mUp - data.mPos);
+            mGo.transform.position = _data.mPos;
+            mGo.transform.LookAt(_data.mDir, _data.mUp - _data.mPos);
             var mGizmo = mGo.AddComponent<Gizmo>();
             mGizmo.meshPos = meshQuad;
             mGizmo.meshDir = meshCube;
             mGizmo.scaleMeshDir = Vector3.one * 0.2f;
             mGizmo.color = colorM;
-            mGizmo.pos = data.mPos;
-            mGizmo.dir = data.mDir;
-            mGizmo.up = data.mUp;
+            mGizmo.pos = _data.mPos;
+            mGizmo.dir = _data.mDir;
+            mGizmo.up = _data.mUp;
 
-            var hash = DataHash.Hash(data);
-            WriteFile(hash, scene);
+            WriteFile(scene, _name);
         }
 
-        private static void WriteFile(string hash, Scene scene)
+        private static void WriteFile(Scene scene, string name)
         {
             const string dirPathRel = "Assets/Scripts/Tests/DisplayScenes";
             System.IO.Directory.CreateDirectory(dirPathRel);
 
-            var fileName = $"test-{hash}.unity";
+            var fileName = $"test-{name}.unity";
             var filePathRel = System.IO.Path.Combine(dirPathRel, fileName);
             EditorSceneManager.SaveScene(scene, filePathRel, false);
 
