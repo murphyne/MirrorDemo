@@ -6,7 +6,7 @@ public class Mirror : MonoBehaviour
 {
     [SerializeField] private MeshRenderer mirrorRenderer;
 
-    private readonly Dictionary<Camera, Camera> _mirrorCameras =
+    private readonly Dictionary<Camera, Camera> _companionCameras =
         new Dictionary<Camera, Camera>();
 
     private readonly Dictionary<Camera, RenderTexture> _renderTextures =
@@ -14,13 +14,13 @@ public class Mirror : MonoBehaviour
 
     private void OnDisable()
     {
-        foreach (var pair in _mirrorCameras)
+        foreach (var pair in _companionCameras)
         {
-            var mirrorCamera = pair.Value;
-            DestroyImmediate(mirrorCamera.gameObject);
+            var companionCamera = pair.Value;
+            DestroyImmediate(companionCamera.gameObject);
         }
 
-        _mirrorCameras.Clear();
+        _companionCameras.Clear();
 
         foreach (var pair in _renderTextures)
         {
@@ -44,14 +44,14 @@ public class Mirror : MonoBehaviour
         if (!currentCamera.enabled) return;
 #endif
 
-        var mirrorCamera = GetMirrorCamera(currentCamera);
+        var companionCamera = GetCompanionCamera(currentCamera);
         var renderTexture = GetRenderTexture(currentCamera);
 
-        mirrorCamera.CopyFrom(currentCamera);
-        mirrorCamera.targetTexture = renderTexture;
+        companionCamera.CopyFrom(currentCamera);
+        companionCamera.targetTexture = renderTexture;
         mirrorRenderer.sharedMaterial.mainTexture = renderTexture;
 
-        MirrorTransform(currentCamera, mirrorCamera, mirrorRenderer.transform);
+        MirrorTransform(currentCamera, companionCamera, mirrorRenderer.transform);
 
         if (renderTexture.width != Screen.width || renderTexture.height != Screen.height)
         {
@@ -64,50 +64,50 @@ public class Mirror : MonoBehaviour
         }
 
         GL.invertCulling = true;
-        mirrorCamera.Render();
+        companionCamera.Render();
         GL.invertCulling = false;
     }
 
-    private Camera GetMirrorCamera(Camera camera)
+    private Camera GetCompanionCamera(Camera originalCamera)
     {
-        if (_mirrorCameras.TryGetValue(camera, out var mirrorCamera))
-            if (mirrorCamera != null)
-                return mirrorCamera;
+        if (_companionCameras.TryGetValue(originalCamera, out var companionCamera))
+            if (companionCamera != null)
+                return companionCamera;
 
-        mirrorCamera = CreateMirrorCamera(camera);
-        _mirrorCameras[camera] = mirrorCamera;
-        return mirrorCamera;
+        companionCamera = CreateCompanionCamera(originalCamera);
+        _companionCameras[originalCamera] = companionCamera;
+        return companionCamera;
     }
 
-    private Camera CreateMirrorCamera(Camera camera)
+    private Camera CreateCompanionCamera(Camera originalCamera)
     {
-        var mirrorCameraGameObject = new GameObject();
-        mirrorCameraGameObject.name = $"Mirror Camera [{camera.name}]";
-        mirrorCameraGameObject.transform.parent = transform;
-        mirrorCameraGameObject.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
+        var companionCameraGameObject = new GameObject();
+        companionCameraGameObject.name = $"Mirror Camera [{originalCamera.name}]";
+        companionCameraGameObject.transform.parent = transform;
+        companionCameraGameObject.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
 
-        var mirrorCamera = mirrorCameraGameObject.AddComponent<Camera>();
-        mirrorCamera.enabled = false;
+        var companionCamera = companionCameraGameObject.AddComponent<Camera>();
+        companionCamera.enabled = false;
 
-        return mirrorCamera;
+        return companionCamera;
     }
 
-    private RenderTexture GetRenderTexture(Camera camera)
+    private RenderTexture GetRenderTexture(Camera originalCamera)
     {
-        if (_renderTextures.TryGetValue(camera, out var renderTexture))
+        if (_renderTextures.TryGetValue(originalCamera, out var renderTexture))
             if (renderTexture != null)
                 return renderTexture;
 
-        renderTexture = CreateRenderTexture(camera);
-        _renderTextures[camera] = renderTexture;
+        renderTexture = CreateRenderTexture(originalCamera);
+        _renderTextures[originalCamera] = renderTexture;
         return renderTexture;
     }
 
-    private static RenderTexture CreateRenderTexture(Camera camera)
+    private static RenderTexture CreateRenderTexture(Camera originalCamera)
     {
         // Debug.Log($"Create texture {Screen.width}x{Screen.height}");
         var renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
-        renderTexture.name = $"Mirror Texture [{camera.name}]";
+        renderTexture.name = $"Mirror Texture [{originalCamera.name}]";
         // renderTexture.Create();
 
         return renderTexture;

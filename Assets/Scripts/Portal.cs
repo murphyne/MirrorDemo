@@ -7,7 +7,7 @@ public class Portal : MonoBehaviour
     [SerializeField] private Portal otherPortal;
     [SerializeField] private MeshRenderer portalRenderer;
 
-    private readonly Dictionary<Camera, Camera> _portalCameras =
+    private readonly Dictionary<Camera, Camera> _companionCameras =
         new Dictionary<Camera, Camera>();
 
     private readonly Dictionary<Camera, RenderTexture> _renderTextures =
@@ -15,13 +15,13 @@ public class Portal : MonoBehaviour
 
     private void OnDisable()
     {
-        foreach (var pair in _portalCameras)
+        foreach (var pair in _companionCameras)
         {
-            var portalCamera = pair.Value;
-            DestroyImmediate(portalCamera.gameObject);
+            var companionCamera = pair.Value;
+            DestroyImmediate(companionCamera.gameObject);
         }
 
-        _portalCameras.Clear();
+        _companionCameras.Clear();
 
         foreach (var pair in _renderTextures)
         {
@@ -45,14 +45,14 @@ public class Portal : MonoBehaviour
         if (!currentCamera.enabled) return;
 #endif
 
-        var portalCamera = GetPortalCamera(currentCamera);
+        var companionCamera = GetCompanionCamera(currentCamera);
         var renderTexture = GetRenderTexture(currentCamera);
 
-        portalCamera.CopyFrom(currentCamera);
-        portalCamera.targetTexture = renderTexture;
+        companionCamera.CopyFrom(currentCamera);
+        companionCamera.targetTexture = renderTexture;
         portalRenderer.sharedMaterial.mainTexture = renderTexture;
 
-        PortalTransform(currentCamera.transform, portalCamera.transform,
+        PortalTransform(currentCamera.transform, companionCamera.transform,
             this.transform, otherPortal.transform);
 
         if (renderTexture.width != Screen.width || renderTexture.height != Screen.height)
@@ -65,49 +65,49 @@ public class Portal : MonoBehaviour
             renderTexture.Create();
         }
 
-        portalCamera.Render();
+        companionCamera.Render();
     }
 
-    private Camera GetPortalCamera(Camera camera)
+    private Camera GetCompanionCamera(Camera originalCamera)
     {
-        if (_portalCameras.TryGetValue(camera, out var portalCamera))
-            if (portalCamera != null)
-                return portalCamera;
+        if (_companionCameras.TryGetValue(originalCamera, out var companionCamera))
+            if (companionCamera != null)
+                return companionCamera;
 
-        portalCamera = CreatePortalCamera(camera);
-        _portalCameras[camera] = portalCamera;
-        return portalCamera;
+        companionCamera = CreateCompanionCamera(originalCamera);
+        _companionCameras[originalCamera] = companionCamera;
+        return companionCamera;
     }
 
-    private Camera CreatePortalCamera(Camera camera)
+    private Camera CreateCompanionCamera(Camera originalCamera)
     {
-        var portalCameraGameObject = new GameObject();
-        portalCameraGameObject.name = $"Portal Camera [{camera.name}]";
-        portalCameraGameObject.transform.parent = transform;
-        portalCameraGameObject.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
+        var companionCameraGameObject = new GameObject();
+        companionCameraGameObject.name = $"Portal Camera [{originalCamera.name}]";
+        companionCameraGameObject.transform.parent = transform;
+        companionCameraGameObject.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
 
-        var portalCamera = portalCameraGameObject.AddComponent<Camera>();
-        portalCamera.enabled = false;
+        var companionCamera = companionCameraGameObject.AddComponent<Camera>();
+        companionCamera.enabled = false;
 
-        return portalCamera;
+        return companionCamera;
     }
 
-    private RenderTexture GetRenderTexture(Camera camera)
+    private RenderTexture GetRenderTexture(Camera originalCamera)
     {
-        if (_renderTextures.TryGetValue(camera, out var renderTexture))
+        if (_renderTextures.TryGetValue(originalCamera, out var renderTexture))
             if (renderTexture != null)
                 return renderTexture;
 
-        renderTexture = CreateRenderTexture(camera);
-        _renderTextures[camera] = renderTexture;
+        renderTexture = CreateRenderTexture(originalCamera);
+        _renderTextures[originalCamera] = renderTexture;
         return renderTexture;
     }
 
-    private static RenderTexture CreateRenderTexture(Camera camera)
+    private static RenderTexture CreateRenderTexture(Camera originalCamera)
     {
         // Debug.Log($"Create texture {Screen.width}x{Screen.height}");
         var renderTexture = new RenderTexture(Screen.width, Screen.height, 0);
-        renderTexture.name = $"Portal Texture [{camera.name}]";
+        renderTexture.name = $"Portal Texture [{originalCamera.name}]";
         // renderTexture.Create();
 
         return renderTexture;
