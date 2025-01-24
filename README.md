@@ -30,3 +30,14 @@ https://www.youtube.com/watch?v=SGQ2EUQxYpA
 
 Planar Reflection with Unity - Extra Part  
 https://www.youtube.com/watch?v=OoBDcJf2VWA
+
+Multiple Recursive Portals and AI In Unity  
+https://medium.com/@limdingwen_66715/recursive-portals-and-ai-intro-and-table-of-contents-acb097bc7f89  
+https://medium.com/@limdingwen_66715/multiple-recursive-portals-and-ai-in-unity-part-1-basic-portal-rendering-7c3d957f656c  
+https://medium.com/@limdingwen_66715/multiple-recursive-portals-and-ai-in-unity-part-2-portal-teleportation-e66da381221d  
+https://medium.com/@limdingwen_66715/multiple-recursive-portals-and-ai-in-unity-part-3-raycasting-through-portals-5308587f7c5  
+https://medium.com/@limdingwen_66715/multiple-recursive-portals-and-ai-in-unity-part-4-recursive-portal-rendering-d141c8bcc45b  
+https://medium.com/@limdingwen_66715/multiple-recursive-portals-and-ai-in-unity-part-5-optimizations-in-portal-rendering-2b231883009  
+https://medium.com/@limdingwen_66715/multiple-recursive-portals-and-ai-in-unity-part-6-object-cloning-dcf547574c04  
+https://medium.com/@limdingwen_66715/multiple-recursive-portals-and-ai-in-unity-part-7-ai-navigation-f9bd378dfbf9  
+https://medium.com/@limdingwen_66715/multiple-recursive-portals-and-ai-in-unity-part-8-ai-visibility-checks-7c875fdda28e
