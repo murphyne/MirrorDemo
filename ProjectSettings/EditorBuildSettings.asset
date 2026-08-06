@@ -9,3 +9,4 @@ EditorBuildSettings:
     path: Assets/Scenes/MirrorScene.unity
     guid: 4c767d23ce70e884fab09f8f83df102c
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
